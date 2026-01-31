@@ -44,6 +44,7 @@ nav {
     font-weight: 400; 
     letter-spacing: -0.5px;
     text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
 .logo a {
@@ -60,7 +61,8 @@ nav {
 
 .logo span {
     font-weight: 800; /* ExtraBold for AGUIAR */
-    margin-left: 3px; 
+    margin-left: 3px;
+    letter-spacing: initial; 
 }
 
 /* Main Navigation Links */

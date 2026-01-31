@@ -1,119 +1,657 @@
-/* --- Basic Reset and Body Setup --- */
-body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    font-family: sans-serif; /* A fallback font for the whole page */
+/* --- 1. FONTS & SETUP --- */
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400&display=swap');
+
+:root {
+    --bg-color: #111111;
+    --text-color: #f4f4f4;
+    --accent-color: #d4af37; /* Gold */
+    --font-heading: 'Epilogue', sans-serif; 
+    --font-body: 'Inter', sans-serif;
 }
 
-/* --- The Main Hero Container --- */
-.hero-section {
-    /* 1. Sizing and Positioning */
-    width: 100vw;   /* 100% of the viewport width */
-    height: 100vh;  /* 100% of the viewport height */
-    position: relative; /* This is crucial for the overlay to work */
-    overflow: hidden; /* Ensures nothing spills out of the hero section */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* 2. The Background Image */
-    background-image: url('https://stefanoraguiar.github.io/photos/39896840360_8e46a38344_b.jpg');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
 
-    /* 3. Centering the content (the text-box) inside */
+/* --- 2. HEADER & NAV --- */
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 2rem;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* LOGO FIX: Ensures link color never changes (visited/hover) */
+.logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 400; 
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+.logo a {
+    text-decoration: none;
+    color: var(--text-color); /* Enforce white color */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Explicitly prevent purple visited links */
+.logo a:visited, .logo a:active, .logo a:hover {
+    color: var(--text-color); 
+}
+
+.logo span {
+    font-weight: 800; /* ExtraBold for AGUIAR */
+    margin-left: 3px; 
+}
+
+/* Main Navigation Links */
+.nav-links { list-style: none; display: flex; gap: 2rem; }
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.nav-links a:hover { color: var(--accent-color); }
+
+
+/* --- 3. HERO SECTION --- */
+#hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    overflow: hidden;
 }
 
-/* --- The Gradient Overlay --- */
-.hero-section::before {
-    content: ''; /* Pseudo-elements require a content property */
+.hero-bg {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-
-    /* 4. The Diagonal Teal Gradient */
-    background: linear-gradient(45deg, #007F80, #005F60);
-    
-    /* 5. The Multiply Blending Mode */
-    mix-blend-mode: screen;
-}
-/* --- The Semi-Transparent Text Box --- */
-.hero-header-container{
-    display:flex column;
-    justify-items: flex-end;
-}
-
-.text-box, .signature-box {
-    /* Adding some space between the text and the border */
-    padding: 2rem 4rem; 
-
-    /* 6. The Semi-Transparent Background */
-    background-color: rgba(0, 0, 0, 0.15); /* A very subtle dark transparency */
-
-    /* 7. The 4px White Border */
-    border: 4px solid white;
-
-    /* This ensures the box sits on top of the gradient overlay */
+    object-fit: cover;
     z-index: 1;
 }
 
-.signature-box{
-    padding: 1rem 2rem;
-    margin-top: 16px;
-    align-self: flex-end;
-    width:fit-content;
-}
-
-
-/* --- The Text Styling --- */
-.text-box h1, .signature-box h1 {
-    margin: 0;
-    color: white;
-    font-weight: bold;
-    text-transform: uppercase; /* Makes the text all caps for style */
-
-    /* 8. Font Size and Letter Spacing (Your Refinements) */
-    font-size: 2.2rem; /* Lowered the font size */
-    letter-spacing: 0.75em; /* Significantly increased letter spacing */
-}
-
-.signature-box h1{
-    font-size: 1.2rem;
-}
-
-/* --- Scroll Down Arrow Styling & Animation --- */
-
-.scroll-down-arrow {
-    /* 1. Positioning at the bottom center */
+.hero-overlay {
     position: absolute;
-    bottom: 30px; /* 30px from the bottom */
-    left: 50%; /* 50% from the left */
-    transform: translateX(-50%); /* This perfectly centers it */
-    z-index: 1;
-
-    /* 2. Styling the icon itself */
-    font-size: 2rem; /* How big the arrow is */
-    color: teal;
-
-    /* 3. Applying the animation we will create below */
-    animation: blinkAnimation 2.5s infinite;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2;
 }
 
-/* 4. Defining the "blink" animation using keyframes */
-@keyframes blinkAnimation {
-    0% {
+.hero-content {
+    position: relative;
+    z-index: 3;
+    padding: 0 1rem;
+}
+
+.hero-content h1 {
+    font-family: var(--font-heading);
+    font-size: 4.5rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.1;
+}
+
+.hero-content p {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.cta-button {
+    display: inline-block;
+    border: 1px solid var(--text-color);
+    padding: 1rem 2.5rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.cta-button:hover { background: var(--text-color); color: var(--bg-color); }
+
+
+/* --- 4. GALLERY (MASONRY) --- */
+#work {
+    padding: 6rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.gallery-header h2 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+.gallery-grid {
+    column-count: 3; /* Standard layout */
+    column-gap: 2rem;
+}
+
+.project-card {
+    display: block;
+    margin-bottom: 3rem;
+    break-inside: avoid;
+    text-decoration: none;
+}
+
+/* The Zoom Window */
+.project-card figure {
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.8s ease;
+}
+
+/* The Zoom Action */
+.project-card:hover img {
+    transform: scale(1.15);
+}
+
+.project-card figcaption {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: #888;
+    border-top: 1px solid #333;
+    padding-top: 0.5rem;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.project-card:hover figcaption {
+    color: var(--text-color);
+    border-color: var(--accent-color);
+}
+
+.project-title { text-transform: uppercase; letter-spacing: 1px; }
+
+/* Global Footer */
+footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    margin-top: 2rem;
+}
+
+
+/* --- 5. PHILOSOPHY SECTION --- */
+#philosophy {
+    padding: 8rem 2rem;
+    background-color: #161616;
+}
+
+.philosophy-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.philosophy-text h2 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+}
+
+.philosophy-text h3 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 200;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+}
+
+.philosophy-text p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: #ccc;
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+}
+
+.text-link {
+    display: inline-block;
+    color: var(--text-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 2px;
+    margin-top: 1rem;
+    transition: color 0.3s ease;
+}
+.text-link:hover { color: var(--accent-color); }
+
+.philosophy-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.philosophy-image:hover img { filter: grayscale(0%); }
+
+/* Responsive Philosophy */
+@media (max-width: 900px) {
+    .philosophy-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .philosophy-text { order: 2; }
+    .philosophy-image { order: 1; }
+    .philosophy-text h3 { font-size: 2.2rem; }
+}
+
+
+/* --- 6. CONTACT SECTION --- */
+#contact {
+    padding: 8rem 2rem;
+    text-align: center;
+    background: linear-gradient(to top, #000000, #111111);
+}
+
+.contact-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#contact h2 {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+}
+
+#contact p {
+    font-size: 1.1rem;
+    color: #888;
+    margin-bottom: 4rem;
+}
+
+.contact-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 400px;
+    padding: 1.2rem;
+    border: 1px solid #333;
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.contact-btn svg { fill: currentColor; }
+.contact-btn.email svg { fill: none; stroke: currentColor; }
+
+.contact-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+@media (min-width: 768px) {
+    .contact-buttons { flex-direction: row; justify-content: center; }
+}
+
+
+/* --- 7. PROJECT PAGE SPECIFICS --- */
+.project-header {
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+}
+.project-header a { text-decoration: none; color: var(--text-color); }
+
+.back-link {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Split Layout (Desktop) */
+.project-layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 2rem;
+}
+
+/* Sticky Sidebar */
+.project-sidebar {
+    width: 25%;
+    padding: 4rem 2rem 2rem 4rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.project-sidebar::-webkit-scrollbar { display: none; }
+
+.meta-label {
+    font-family: var(--font-heading);
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.meta-value {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #ccc;
+}
+
+.project-description p {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+    font-size: 0.95rem;
+    color: #bbb;
+}
+
+/* Right Gallery */
+.project-gallery {
+    width: 75%;
+    padding: 2rem 4rem 4rem 2rem;
+    border-left: 1px solid #222;
+}
+
+.project-title-container {
+    text-align: right;
+    margin-bottom: 4rem;
+    padding-right: 1rem;
+}
+
+.project-title-container h1 {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    line-height: 1;
+}
+
+/* Project Masonry Grid */
+.masonry-grid {
+    column-count: 3;
+    column-gap: 2rem;
+}
+
+.gallery-trigger {
+    display: block;
+    margin-bottom: 2rem;
+    cursor: zoom-in;
+}
+
+.gallery-trigger img {
+    width: 100%;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+.gallery-trigger:hover img { opacity: 0.8; }
+
+
+/* --- 8. LIGHTBOX MODAL --- */
+#lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#lightbox.active { opacity: 1; pointer-events: all; }
+
+#lightbox-img {
+    max-width: 90%;
+    max-height: 90vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.close-lightbox {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-size: 3rem;
+    color: #fff;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: color 0.3s;
+}
+.close-lightbox:hover { color: var(--accent-color); }
+
+
+/* --- 9. DROPDOWN MENU --- */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 1rem;
+    margin-bottom: -1rem;
+}
+
+.dropbtn { cursor: default; }
+
+.dropdown-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background-color: #1a1a1a;
+    min-width: 220px;
+    padding: 1rem 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 100;
+    transition: all 0.3s ease;
+    border: 1px solid #333;
+}
+
+.dropdown-content a {
+    color: #ccc;
+    padding: 12px 20px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.8rem;
+    text-align: center;
+    font-weight: 400;
+    border-bottom: 1px solid #222;
+}
+
+.dropdown-content a:last-child { border-bottom: none; }
+
+.dropdown-content a:hover {
+    background-color: #000;
+    color: var(--accent-color);
+}
+
+.dropdown:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0px);
+}
+
+
+/* --- 10. MOBILE MENU & RESPONSIVE --- */
+.hamburger {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 20;
+}
+
+.bar {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background-color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* Main Responsive Block */
+@media (max-width: 1024px) {
+    .project-layout { flex-direction: column; }
+    
+    .project-sidebar {
+        width: 100%;
+        height: auto;
+        padding: 2rem;
+        position: relative;
+    }
+    .project-gallery {
+        width: 100%;
+        padding: 2rem;
+        border-left: none;
+    }
+    .project-title-container h1 { font-size: 3rem; }
+    
+    /* Reduce Gallery columns on tablet */
+    .gallery-grid, .masonry-grid { column-count: 2; }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 2.8rem; }
+    .gallery-grid, .masonry-grid { column-count: 1; }
+    header { justify-content: center; }
+    
+    .hamburger { display: flex; }
+
+    /* Mobile Nav Overlay */
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 100%;
+        background-color: #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        transition: right 0.4s ease;
+        z-index: 15;
+    }
+
+    .nav-links.active { right: 0; }
+    .nav-links li { opacity: 0; }
+    .nav-links a { font-size: 1.5rem; }
+
+    /* Fix Dropdown on Mobile */
+    .dropdown-content {
+        position: static;
+        visibility: visible;
         opacity: 1;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        transform: none;
+        text-align: center;
+        padding-top: 1rem;
+        display: none;
     }
-    50% {
-        opacity: 0.2;
-    }
-    100% {
-        opacity: 1;
-    }
+    
+    .dropdown.active .dropdown-content { display: block; }
+}
+
+/* Animations */
+.hamburger.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active .bar:nth-child(2) { opacity: 0; }
+.hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@keyframes navLinkFade {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
 }

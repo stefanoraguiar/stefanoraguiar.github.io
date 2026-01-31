@@ -3,52 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stefano Aguiar | Personal Portfolio</title>
+    <meta name="description" content="Artistic and erotic portrait photography by Stefano Aguiar. Based in Porto, Portugal.">
+    <title>Stefano Aguiar | Portrait Photography Porto</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
- <section class="hero-section">
-    <div class="hero-header-container">
-        <div class="text-box">
-            <h1>tilt your view</h1>
-        </div>
-    
-        <div class="signature-box">
-            <h1>Stefano Aguiar</h1>
-        </div>
-        </div><div class="scroll-down-arrow">
-            <i class="fa-solid fa-chevron-down"></i>
-        </div>
-    
-    </section>
-    <section id="portraiture" class="content-section">
-        
-        <div class="image-grid-container">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 1">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 2">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 3">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 4">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 5">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 6">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 7">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 8">
-            <img src="https://placehold.co/300x300" alt="Portrait placeholder image 9">
-        </div>
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">STEFANO<span>AGUIAR</span></a></div>
+            
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
 
-        <div class="text-content-container">
-            <h2>Portraiture</h2>
-            <p>
-                Here you can write a compelling description of your portrait photography. 
-                Talk about your style, your approach, and what you aim to capture in your subjects. 
-                This text explains the art and soul behind the images on the left.
-            </p>
-        </div>
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="index.html#work" class="dropbtn">Works ▾</a>
+                    <div class="dropdown-content">
+                        <a href="project-nowhere-to-go.html">Nowhere to Go</a>
+                        <a href="project-boudoir.html">Boudoir & Lingerie</a>
+                    </div>
+                </li>
+                <li><a href="index.html#philosophy">Philosophy</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    </section>
-    
-</body>
-</html>
+    <main>
+        <section id="hero">
+            <img 
+              class="hero-bg"
+              src="img/black-and-white-portrait-woman-6497-1200.webp" 
+              srcset="img/black-and-white-portrait-woman-6497-600.webp 600w,
+                      img/black-and-white-portrait-woman-6497-1200.webp 1200w,
+                      img/black-and-white-portrait-woman-6497-1500.webp 1500w,
+                      img/black-and-white-portrait-woman-6497-2500.webp 2500w"
+              sizes="100vw"
+              alt="Black and white artistic portrait of a woman"
+              loading="eager">
+
+            <div class="hero-overlay"></div>
+            
+            <div class="hero-content">
+                <h1>The Human Figure</h1>
+                <p>Artistic Portraiture &mdash; Porto, Portugal</p>
+                <a href="#work" class="cta-button">View Gallery</a>
+            </div>
+        </section>
+
+        <section id="work">
+            <div class="gallery-header">
+                <h2>Selected Portfolios</h2>
+                <p>A collection of light, shadow, and form.</p>
+            </div>
+
+            <div class="gallery-grid">
+                
+                <a href="project-nowhere-to-go.html" class="project-card">
+                    <figure>
+                        <img src="img/nowhere-to-go-photographer-portfolio-photography-project-9859-600.webp" alt="Portrait of a woman holding a cigarrette, part of the project Nowhere to Go by the Porto Photographer Stefano Aguiar">
+                        <figcaption>
+                            <span class="project-title">Nowhere to Go</span>
+                            <span class="project-year">2024</span>
+                        </figcaption>
+                    </figure>
+                </a>
+
+                <a href="collected.html" class="project-card">
+                    <figure>
+                        <img src="img/collected-opportunity-photographer-portfolio-10221-600.webp" alt="Naked woman holding a red book.">
+                        <figcaption>
+                            <span class="project-title">Collected Opportunities</span>
+                            <span class="project-year">2018-now</span>
+                        </figcaption>
+                    </figure>
+                </a>
+
+                <a href="project-nowhere-to-go.html" class="project-card">
+                    <figure>
+                        <img src="img/artistice-cyanotype-nude-woman-9057-600.webp" alt="Porto Noir Project">
+                        <figcaption>
+                            <span class="project-title">Porto Noir</span>
+                            <span class="project-year">2025</span>
+                        </figcaption>
+                    </figure>
+                </a>
+
+                <a href="project-nowhere-to-go.html" class="project-card">
+                    <figure>
+                        <img src="img/black-and-white-portrait-woman-6497-600.webp" alt="Study No. 4">
+                        <figcaption>
+                            <span class="project-title">Study No. 4</span>
+                            <span class="project-year">2023</span>
+                        </figcaption>
+                    </figure>
+                </a>
+                 
+            </div>
+        </section>
+
+        <section id="philosophy">
+            <div class="philosophy-container">
+                
+                <div class="philosophy-text">
+                    <h2>The Process</h2>
+                    <h3>Collaboration built on trust.</h3>
+                    <p>
+                        Creating an intimate portrait is a dialogue, not a monologue. My approach focuses on creating a safe, professional, and judgment-free environment where we can explore the human form together.
+                    </p>
+                    <p>
+                        Based in my studio in Porto, I work with natural light and shadow to sculpt images that are timeless and artistic. Whether you are an experienced model or stepping in front of the lens for the first time, my goal is to make you feel empowered and seen.
+                    </p>
+                    <a href="#contact" class="text-link">Read more about the studio &rarr;</a>
+                </div>
+
+                <div class="philosophy-image">
+                    <img src="img/fotografo-de-retratos-boudoir-no-porto-1500.webp" alt="Stefano Aguiar, portrait photographer">
+                </div>
+
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="contact-container">
+                <h2>Let's Create</h2>
+                <p>Currently accepting commissions in Porto and Northern Portugal.</p>
+                
+                <div class="contact-buttons">
+                    
+                    <a href="mailto:book@stefanoaguiar.com" class="contact-btn email">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <span>book@stefanoaguiar.com</span>
+                    </a>
+
+                    <a href="https://wa.me/351914138141" target="_blank" class="contact-btn whatsapp">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.14

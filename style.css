@@ -27,6 +27,7 @@ header {
     width: 100%;
     z-index: 10;
     padding: 2rem;
+    margin-bottom: 24px;
 }
 
 nav {
@@ -37,34 +38,32 @@ nav {
     margin: 0 auto;
 }
 
-/* LOGO FIX: Ensures link color never changes (visited/hover) */
+/* LOGO FIX */
 .logo {
     font-family: var(--font-heading);
     font-size: 1.5rem;
     font-weight: 400; 
-    letter-spacing: -0.5px;
     text-transform: uppercase;
     letter-spacing: 3px;
 }
 
 .logo a {
     text-decoration: none;
-    color: var(--text-color); /* Enforce white color */
+    color: var(--text-color);
     cursor: pointer;
     transition: color 0.3s ease;
 }
 
-/* Explicitly prevent purple visited links */
 .logo a:visited, .logo a:active, .logo a:hover {
     color: var(--text-color); 
 }
 
 .logo span {
-    font-weight: 800; /* ExtraBold for AGUIAR */
+    font-weight: 800; 
     margin-left: 3px;
 }
 
-/* Main Navigation Links */
+/* Nav Links */
 .nav-links { list-style: none; display: flex; gap: 2rem; }
 
 .nav-links a {
@@ -79,7 +78,7 @@ nav {
 .nav-links a:hover { color: var(--accent-color); }
 
 
-/* --- 3. HERO SECTION --- */
+/* --- 3. HERO & SECTIONS --- */
 #hero {
     position: relative;
     height: 100vh;
@@ -153,7 +152,7 @@ nav {
 .cta-button:hover { background: var(--text-color); color: var(--bg-color); }
 
 
-/* --- 4. GALLERY (MASONRY) --- */
+/* --- 4. GALLERY GRIDS --- */
 #work {
     padding: 6rem 2rem;
     max-width: 1400px;
@@ -174,33 +173,33 @@ nav {
     margin-bottom: 1rem;
 }
 
-.gallery-grid {
-    column-count: 3; /* Standard layout */
+/* GRID SYSTEM */
+.gallery-grid, .masonry-grid {
+    column-count: 3; /* Default: 3 Columns */
     column-gap: 2rem;
 }
 
-.project-card {
+/* Specific Dense Grids (Used in Projects) */
+.grid-4 { column-count: 4; }
+.grid-5 { column-count: 5; }
+
+.project-card, .gallery-trigger {
     display: block;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem; /* Consistent spacing */
     break-inside: avoid;
     text-decoration: none;
 }
 
-/* The Zoom Window */
-.project-card figure {
-    position: relative;
-    overflow: hidden;
-}
-
-.project-card img {
+/* Zoom Effects */
+.project-card figure { position: relative; overflow: hidden; }
+.project-card img, .gallery-trigger img {
     width: 100%;
     height: auto;
     display: block;
     transition: transform 0.8s ease;
 }
 
-/* The Zoom Action */
-.project-card:hover img {
+.project-card:hover img, .gallery-trigger:hover img {
     transform: scale(1.15);
 }
 
@@ -220,25 +219,10 @@ nav {
     color: var(--text-color);
     border-color: var(--accent-color);
 }
-
 .project-title { text-transform: uppercase; letter-spacing: 1px; }
 
-/* Global Footer */
-footer {
-    text-align: center;
-    padding: 2rem;
-    font-size: 0.8rem;
-    opacity: 0.5;
-    margin-top: 2rem;
-}
-
-
-/* --- 5. PHILOSOPHY SECTION --- */
-#philosophy {
-    padding: 8rem 2rem;
-    background-color: #161616;
-}
-
+/* --- 5. PHILOSOPHY & CONTACT --- */
+#philosophy { padding: 8rem 2rem; background-color: #161616; }
 .philosophy-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -247,7 +231,6 @@ footer {
     gap: 4rem;
     align-items: center;
 }
-
 .philosophy-text h2 {
     font-family: var(--font-heading);
     font-size: 1rem;
@@ -256,7 +239,6 @@ footer {
     color: var(--accent-color);
     margin-bottom: 1rem;
 }
-
 .philosophy-text h3 {
     font-family: var(--font-heading);
     font-size: 3rem;
@@ -264,7 +246,6 @@ footer {
     line-height: 1.1;
     margin-bottom: 2rem;
 }
-
 .philosophy-text p {
     font-family: var(--font-body);
     font-size: 1rem;
@@ -272,7 +253,6 @@ footer {
     margin-bottom: 1.5rem;
     max-width: 500px;
 }
-
 .text-link {
     display: inline-block;
     color: var(--text-color);
@@ -283,7 +263,6 @@ footer {
     transition: color 0.3s ease;
 }
 .text-link:hover { color: var(--accent-color); }
-
 .philosophy-image img {
     width: 100%;
     height: auto;
@@ -291,33 +270,10 @@ footer {
     filter: grayscale(100%);
     transition: filter 0.5s ease;
 }
-
 .philosophy-image:hover img { filter: grayscale(0%); }
 
-/* Responsive Philosophy */
-@media (max-width: 900px) {
-    .philosophy-container {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-    .philosophy-text { order: 2; }
-    .philosophy-image { order: 1; }
-    .philosophy-text h3 { font-size: 2.2rem; }
-}
-
-
-/* --- 6. CONTACT SECTION --- */
-#contact {
-    padding: 8rem 2rem;
-    text-align: center;
-    background: linear-gradient(to top, #000000, #111111);
-}
-
-.contact-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
+#contact { padding: 8rem 2rem; text-align: center; background: linear-gradient(to top, #000000, #111111); }
+.contact-container { max-width: 800px; margin: 0 auto; }
 #contact h2 {
     font-family: var(--font-heading);
     font-size: 3rem;
@@ -326,75 +282,23 @@ footer {
     letter-spacing: 2px;
     margin-bottom: 1rem;
 }
-
-#contact p {
-    font-size: 1.1rem;
-    color: #888;
-    margin-bottom: 4rem;
-}
-
-.contact-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-}
-
+#contact p { font-size: 1.1rem; color: #888; margin-bottom: 4rem; }
+.contact-buttons { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
 .contact-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    width: 100%;
-    max-width: 400px;
-    padding: 1.2rem;
-    border: 1px solid #333;
-    color: var(--text-color);
-    text-decoration: none;
-    font-family: var(--font-heading);
-    font-weight: 400;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    width: 100%; max-width: 400px; padding: 1.2rem;
+    border: 1px solid #333; color: var(--text-color); text-decoration: none;
+    font-family: var(--font-heading); font-weight: 400; text-transform: uppercase; letter-spacing: 1px;
     transition: all 0.3s ease;
 }
-
 .contact-btn svg { fill: currentColor; }
 .contact-btn.email svg { fill: none; stroke: currentColor; }
+.contact-btn:hover { border-color: var(--accent-color); color: var(--accent-color); background: rgba(255, 255, 255, 0.02); }
 
-.contact-btn:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-    background: rgba(255, 255, 255, 0.02);
-}
+/* --- 6. PROJECT PAGE SPECIFICS --- */
+.project-header { padding: 2rem; position: relative; z-index: 10; }
+.project-layout { display: flex; min-height: 100vh; padding-top: 4rem; }
 
-@media (min-width: 768px) {
-    .contact-buttons { flex-direction: row; justify-content: center; }
-}
-
-
-/* --- 7. PROJECT PAGE SPECIFICS --- */
-.project-header {
-    padding: 2rem;
-    position: relative;
-    z-index: 10;
-}
-.project-header a { text-decoration: none; color: var(--text-color); }
-
-.back-link {
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Split Layout (Desktop) */
-.project-layout {
-    display: flex;
-    min-height: 100vh;
-    padding-top: 2rem;
-}
-
-/* Sticky Sidebar */
 .project-sidebar {
     width: 25%;
     padding: 4rem 2rem 2rem 4rem;
@@ -402,257 +306,123 @@ footer {
     top: 0;
     height: 100vh;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     scrollbar-width: none;
-    -ms-overflow-style: none;
 }
 .project-sidebar::-webkit-scrollbar { display: none; }
 
-.meta-label {
-    font-family: var(--font-heading);
-    color: var(--accent-color);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.meta-label { font-family: var(--font-heading); color: var(--accent-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; display: block; }
+.meta-value { font-family: var(--font-body); font-size: 1rem; margin-bottom: 2rem; color: #ccc; }
+.project-description p { margin-bottom: 1rem; line-height: 1.7; font-size: 0.95rem; color: #bbb; }
+
+.project-gallery { width: 75%; padding: 2rem 4rem 4rem 2rem; border-left: 1px solid #222; }
+.project-title-container { text-align: right; margin-bottom: 4rem; padding-right: 1rem; }
+.project-title-container h1 { font-family: var(--font-heading); font-size: 5rem; font-weight: 200; text-transform: uppercase; letter-spacing: 4px; line-height: 1; }
+
+/* --- 7. UTILITIES --- */
+/* --- FOOTER & LEGAL --- */
+footer { 
+    text-align: center; 
+    padding: 4rem 2rem; 
+    margin-top: 4rem; 
+    border-top: 1px solid #222; /* Subtle separation from content */
+}
+
+footer p {
+    color: #666; /* Muted grey for standard text */
+    font-size: 0.9rem;
     margin-bottom: 0.5rem;
-    display: block;
 }
 
-.meta-value {
+.legal-disclaimer {
+    font-size: 0.75rem; /* Smaller fine print size */
+    opacity: 0.6;
+    max-width: 600px;
+    margin: 0 auto;
     font-family: var(--font-body);
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    color: #ccc;
 }
 
-.project-description p {
-    margin-bottom: 1rem;
-    line-height: 1.7;
-    font-size: 0.95rem;
-    color: #bbb;
-}
-
-/* Right Gallery */
-.project-gallery {
-    width: 75%;
-    padding: 2rem 4rem 4rem 2rem;
-    border-left: 1px solid #222;
-}
-
-.project-title-container {
-    text-align: right;
-    margin-bottom: 4rem;
-    padding-right: 1rem;
-}
-
-.project-title-container h1 {
-    font-family: var(--font-heading);
-    font-size: 5rem;
-    font-weight: 200;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    line-height: 1;
-}
-
-/* Project Masonry Grid */
-.masonry-grid {
-    column-count: 3;
-    column-gap: 2rem;
-}
-
-.gallery-trigger {
-    display: block;
-    margin-bottom: 2rem;
-    cursor: zoom-in;
-}
-
-.gallery-trigger img {
-    width: 100%;
-    display: block;
-    transition: opacity 0.3s ease;
-}
-.gallery-trigger:hover img { opacity: 0.8; }
-
-
-/* --- 8. LIGHTBOX MODAL --- */
 #lightbox {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95); z-index: 1000;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
 }
-
 #lightbox.active { opacity: 1; pointer-events: all; }
-
-#lightbox-img {
-    max-width: 90%;
-    max-height: 90vh;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
-
+#lightbox-img { max-width: 90%; max-height: 90vh; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 .close-lightbox {
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    font-size: 3rem;
-    color: #fff;
-    cursor: pointer;
-    font-family: var(--font-body);
-    transition: color 0.3s;
+    position: absolute; top: 2rem; right: 2rem; font-size: 3rem; color: #fff;
+    cursor: pointer; font-family: var(--font-body); transition: color 0.3s;
 }
 .close-lightbox:hover { color: var(--accent-color); }
 
-
-/* --- 9. DROPDOWN MENU --- */
-.dropdown {
-    position: relative;
-    display: inline-block;
-    padding-bottom: 1rem;
-    margin-bottom: -1rem;
-}
-
+/* --- 8. DROPDOWN & MOBILE MENU --- */
+.dropdown { position: relative; display: inline-block; padding-bottom: 1rem; margin-bottom: -1rem; }
 .dropbtn { cursor: default; }
-
 .dropdown-content {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background-color: #1a1a1a;
-    min-width: 220px;
-    padding: 1rem 0;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    z-index: 100;
-    transition: all 0.3s ease;
-    border: 1px solid #333;
+    visibility: hidden; opacity: 0; position: absolute;
+    top: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+    background-color: #1a1a1a; min-width: 220px; padding: 1rem 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5); z-index: 100;
+    transition: all 0.3s ease; border: 1px solid #333;
 }
-
 .dropdown-content a {
-    color: #ccc;
-    padding: 12px 20px;
-    text-decoration: none;
-    display: block;
-    font-size: 0.8rem;
-    text-align: center;
-    font-weight: 400;
-    border-bottom: 1px solid #222;
+    color: #ccc; padding: 12px 20px; text-decoration: none; display: block;
+    font-size: 0.8rem; text-align: center; font-weight: 400; border-bottom: 1px solid #222;
 }
-
 .dropdown-content a:last-child { border-bottom: none; }
+.dropdown-content a:hover { background-color: #000; color: var(--accent-color); }
+.dropdown:hover .dropdown-content { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0px); }
 
-.dropdown-content a:hover {
-    background-color: #000;
-    color: var(--accent-color);
+.hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 20; }
+.bar { display: block; width: 25px; height: 2px; background-color: var(--text-color); transition: all 0.3s ease; }
+
+/* --- 9. RESPONSIVE QUERIES --- */
+@media (min-width: 768px) {
+    .contact-buttons { flex-direction: row; justify-content: center; }
 }
 
-.dropdown:hover .dropdown-content {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0px);
-}
-
-
-/* --- 10. MOBILE MENU & RESPONSIVE --- */
-.hamburger {
-    display: none;
-    cursor: pointer;
-    flex-direction: column;
-    gap: 5px;
-    z-index: 20;
-}
-
-.bar {
-    display: block;
-    width: 25px;
-    height: 2px;
-    background-color: var(--text-color);
-    transition: all 0.3s ease;
-}
-
-/* Main Responsive Block */
 @media (max-width: 1024px) {
     .project-layout { flex-direction: column; }
-    
-    .project-sidebar {
-        width: 100%;
-        height: auto;
-        padding: 2rem;
-        position: relative;
-    }
-    .project-gallery {
-        width: 100%;
-        padding: 2rem;
-        border-left: none;
-    }
+    .project-sidebar { width: 100%; height: auto; padding: 2rem; position: relative; }
+    .project-gallery { width: 100%; padding: 2rem; border-left: none; }
     .project-title-container h1 { font-size: 3rem; }
+    .philosophy-container { grid-template-columns: 1fr; gap: 3rem; }
+    .philosophy-text { order: 2; }
+    .philosophy-image { order: 1; }
+    .philosophy-text h3 { font-size: 2.2rem; }
     
-    /* Reduce Gallery columns on tablet */
-    .gallery-grid, .masonry-grid { column-count: 2; }
+    /* Reset all grids to 2 columns on Tablet */
+    .gallery-grid, .masonry-grid, .grid-4, .grid-5 { column-count: 2; }
 }
 
 @media (max-width: 768px) {
     .hero-content h1 { font-size: 2.8rem; }
-    .gallery-grid, .masonry-grid { column-count: 1; }
     header { justify-content: center; }
-    
     .hamburger { display: flex; }
 
-    /* Mobile Nav Overlay */
-    .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        width: 100%;
-        background-color: #000;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 2rem;
-        transition: right 0.4s ease;
-        z-index: 15;
-    }
+    /* Reset all grids to 1 column on Mobile */
+    .gallery-grid, .masonry-grid, .grid-4, .grid-5 { column-count: 1; }
 
+    .nav-links {
+        position: fixed; top: 0; right: -100%; height: 100vh; width: 100%;
+        background-color: #000; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; gap: 2rem;
+        transition: right 0.4s ease; z-index: 15;
+    }
     .nav-links.active { right: 0; }
     .nav-links li { opacity: 0; }
     .nav-links a { font-size: 1.5rem; }
-
-    /* Fix Dropdown on Mobile */
-    .dropdown-content {
-        position: static;
-        visibility: visible;
-        opacity: 1;
-        background: transparent;
-        box-shadow: none;
-        border: none;
-        transform: none;
-        text-align: center;
-        padding-top: 1rem;
-        display: none;
-    }
     
+    .dropdown-content {
+        position: static; visibility: visible; opacity: 1; background: transparent;
+        box-shadow: none; border: none; transform: none; text-align: center;
+        padding-top: 1rem; display: none;
+    }
     .dropdown.active .dropdown-content { display: block; }
 }
 
-/* Animations */
 .hamburger.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .hamburger.active .bar:nth-child(2) { opacity: 0; }
 .hamburger.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-@keyframes navLinkFade {
-    from { opacity: 0; transform: translateX(50px); }
-    to { opacity: 1; transform: translateX(0); }
-}
+@keyframes navLinkFade { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }

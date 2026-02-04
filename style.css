@@ -319,23 +319,22 @@ nav {
 .project-title-container { text-align: right; margin-bottom: 4rem; padding-right: 1rem; }
 .project-title-container h1 { font-family: var(--font-heading); font-size: 5rem; font-weight: 200; text-transform: uppercase; letter-spacing: 4px; line-height: 1; }
 
-/* --- 7. UTILITIES --- */
-/* --- FOOTER & LEGAL --- */
+/* --- 7. UTILITIES & FOOTER --- */
 footer { 
     text-align: center; 
     padding: 4rem 2rem; 
     margin-top: 4rem; 
-    border-top: 1px solid #222; /* Subtle separation from content */
+    border-top: 1px solid #222; 
 }
 
 footer p {
-    color: #666; /* Muted grey for standard text */
+    color: #666; 
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
 
 .legal-disclaimer {
-    font-size: 0.75rem; /* Smaller fine print size */
+    font-size: 0.75rem; 
     opacity: 0.6;
     max-width: 600px;
     margin: 0 auto;
@@ -356,7 +355,7 @@ footer p {
 }
 .close-lightbox:hover { color: var(--accent-color); }
 
-/* --- 8. DROPDOWN & MOBILE MENU --- */
+/* --- 8. DROPDOWN & MENU --- */
 .dropdown { position: relative; display: inline-block; padding-bottom: 1rem; margin-bottom: -1rem; }
 .dropbtn { cursor: default; }
 .dropdown-content {
@@ -411,14 +410,39 @@ footer p {
         transition: right 0.4s ease; z-index: 15;
     }
     .nav-links.active { right: 0; }
-    .nav-links li { opacity: 0; }
+    
+    /* FIX 1: Make sure the list item spans the full width so centering works */
+    .nav-links li { 
+        opacity: 0; 
+        width: 100%; 
+        text-align: center;
+    }
+    
     .nav-links a { font-size: 1.5rem; }
     
+    /* FIX 2: FORCE the dropdown to behave on mobile */
     .dropdown-content {
-        position: static; visibility: visible; opacity: 1; background: transparent;
-        box-shadow: none; border: none; transform: none; text-align: center;
-        padding-top: 1rem; display: none;
+        position: relative !important; /* Stop floating */
+        left: 0 !important;            /* Stop moving left */
+        top: 0;
+        transform: none !important;    /* STOP the -50% shift */
+        
+        visibility: visible;
+        opacity: 1;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        
+        min-width: auto !important;    /* Allow it to shrink/grow */
+        width: 100% !important;        /* Fill the screen width */
+        
+        text-align: center;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        display: none;                 /* Hidden until clicked */
     }
+    
+    /* When active, display it as a block */
     .dropdown.active .dropdown-content { display: block; }
 }
 

@@ -1,5 +1,58 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
+    // ==========================================
+    // 0. AGE GATE LOGIC (Injects HTML automatically)
+    // ==========================================
+    const checkAge = () => {
+        // If user has NOT verified yet
+        if (!localStorage.getItem('ageVerified')) {
+            
+            // 1. Create the HTML for the overlay
+            const ageGateHTML = `
+                <div id="age-gate">
+                    <div class="age-gate-content">
+                        <h2>Restricted Access</h2>
+                        <p>This website contains artistic nude photography and adult themes.<br>
+                        Please verify that you are 18 years of age or older to enter.</p>
+                        
+                        <div class="age-gate-buttons">
+                            <button id="btn-enter" class="btn-enter">I am 18+</button>
+                            <button id="btn-exit" class="btn-exit">Exit</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 2. Inject it into the body
+            document.body.insertAdjacentHTML('beforeend', ageGateHTML);
+            document.body.style.overflow = 'hidden'; // Stop scrolling
+
+            // 3. Add Button Logic
+            const btnEnter = document.getElementById('btn-enter');
+            const btnExit = document.getElementById('btn-exit');
+            const ageGate = document.getElementById('age-gate');
+
+            // ENTER: Save cookie and remove overlay
+            btnEnter.addEventListener('click', () => {
+                localStorage.setItem('ageVerified', 'true');
+                ageGate.style.opacity = '0';
+                setTimeout(() => {
+                    ageGate.remove();
+                    document.body.style.overflow = 'auto'; // Re-enable scroll
+                }, 500);
+            });
+
+            // EXIT: Redirect to Google
+            btnExit.addEventListener('click', () => {
+                window.location.href = "https://www.google.com";
+            });
+        }
+    };
+
+    // Run the check immediately
+    checkAge();
+
+
     // ==========================================
     // 1. LIGHTBOX LOGIC (Gallery Zoom)
     // ==========================================
@@ -8,36 +61,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.querySelector('.close-lightbox');
     const triggers = document.querySelectorAll('.gallery-trigger');
 
-    // Only run if lightbox exists on this page
     if (lightbox) {
-        // Open Lightbox
         triggers.forEach(trigger => {
             trigger.addEventListener('click', (e) => {
-                e.preventDefault(); // Stop the link from navigating away
-                const fullSizeSrc = trigger.getAttribute('href'); // Get the 2500px URL
-                
-                lightboxImg.src = fullSizeSrc; // Swap the image
-                lightbox.classList.add('active'); // Show the modal
-                document.body.style.overflow = 'hidden'; // Stop background scrolling
+                e.preventDefault();
+                const fullSizeSrc = trigger.getAttribute('href');
+                lightboxImg.src = fullSizeSrc;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
             });
         });
 
-        // Close Lightbox (Clicking X or the background)
         const closeLightbox = () => {
             lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto'; // Re-enable scrolling
-            setTimeout(() => { lightboxImg.src = ''; }, 300); // Clear image after fade out
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { lightboxImg.src = ''; }, 300);
         };
 
         if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
         
         lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) { // Only close if clicking outside the image
+            if (e.target === lightbox) {
                 closeLightbox();
             }
         });
 
-        // Close on Escape Key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && lightbox.classList.contains('active')) {
                 closeLightbox();
@@ -47,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================
-    // 2. MOBILE MENU LOGIC (Hamburger)
+    // 2. MOBILE MENU LOGIC
     // ==========================================
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
@@ -57,11 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (hamburger) {
         hamburger.addEventListener('click', () => {
-            // Toggle the menu
             navLinks.classList.toggle('active');
             hamburger.classList.toggle('active');
 
-            // Animate Links Fade In
             links.forEach((link, index) => {
                 if (link.style.animation) {
                     link.style.animation = '';
@@ -71,8 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Close menu when a standard link is clicked
-        // (We exclude the dropdown trigger so clicking "Works" doesn't close the menu immediately)
         links.forEach(link => {
             if (!link.classList.contains('dropdown')) {
                 link.addEventListener('click', () => {
@@ -83,13 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Mobile Dropdown Logic (Tap "Works" to open submenu)
         if (dropdown && dropBtn) {
             dropBtn.addEventListener('click', (e) => {
-                // If on mobile (screen smaller than 768px)
                 if (window.innerWidth <= 768) {
-                    e.preventDefault(); // Don't jump to anchor
-                    dropdown.classList.toggle('active'); // CSS handles showing the sub-menu
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
                 }
             });
         }

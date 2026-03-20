@@ -164,7 +164,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
-            z-index: 10; /* Keep above zoomed images */
+            z-index: 10;
         }
 
         #compare-container {
@@ -174,8 +174,7 @@
             justify-content: center;
             align-items: center;
             flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden; /* Prevent horizontal scroll when zooming */
+            overflow: hidden;
         }
 
         .compare-item {
@@ -187,27 +186,26 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            overflow: hidden; /* Contains the zoomed image */
-            cursor: zoom-in;
+            overflow: hidden; 
             border-radius: 4px;
+            cursor: zoom-in;
+        }
+
+        /* Cursor states for panning */
+        .compare-item.zoomed {
+            cursor: grab;
+        }
+        
+        .compare-item.zoomed:active {
+            cursor: grabbing;
         }
 
         .compare-item img {
             width: 100%;
-            height: calc(100% - 30px); /* Leave room for label */
+            height: calc(100% - 30px); 
             object-fit: contain;
             transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            transform-origin: center center;
-            pointer-events: none; /* Let the parent div handle the mouse events */
-        }
-
-        /* Zoomed State */
-        .compare-item.zoomed {
-            cursor: crosshair;
-        }
-
-        .compare-item.zoomed img {
-            transform: scale(3); /* Adjust this number to change zoom intensity */
+            pointer-events: none; /* Stops native browser image drag */
         }
 
         .compare-item .label {
@@ -216,7 +214,7 @@
             align-items: center;
             font-size: 0.8rem;
             color: #aaa;
-            z-index: 2; /* Keep label visible */
+            z-index: 2;
             background: #000;
             width: 100%;
             justify-content: center;
@@ -275,8 +273,8 @@
 
             let selectedFiles = new Set();
             let allImages = [];
+            const ZOOM_LEVEL = 3; // Easily adjust global magnification here
 
-            // 1. Fetch JSON
             fetch('data.json')
                 .then(response => {
                     if (!response.ok) throw new Error("Could not load data.json");
@@ -290,7 +288,6 @@
                     galleryElement.innerHTML = `<p style="color:red; padding: 2rem;">Error: ${error.message}. Please run on a local server.</p>`;
                 });
 
-            // 2. Render Grid
             function renderGallery() {
                 galleryElement.innerHTML = '';
                 allImages.forEach(filename => {
@@ -319,7 +316,6 @@
                 });
             }
 
-            // 3. Handle Selections
             function toggleSelection(cardElement, filename) {
                 if (selectedFiles.has(filename)) {
                     selectedFiles.delete(filename);
@@ -338,10 +334,10 @@
                 btnDone.disabled = count === 0;
             }
 
-            // 4. Open Modal & Build Comparison
+            // Open Modal & Build Comparison
             btnCompare.addEventListener('click', () => {
                 compareContainer.innerHTML = '';
-                btnResetZoom.style.display = 'none'; // Ensure reset button is hidden initially
+                btnResetZoom.style.display = 'none';
                 
                 selectedFiles.forEach(filename => {
                     const item = document.createElement('div');
@@ -349,6 +345,8 @@
                     
                     const img = document.createElement('img');
                     img.src = `img/${filename}`;
+                    img.dataset.tx = 0; // Saved Translation X
+                    img.dataset.ty = 0; // Saved Translation Y
                     
                     const label = document.createElement('div');
                     label.className = 'label';
@@ -357,39 +355,80 @@
                     item.appendChild(img);
                     item.appendChild(label);
                     
-                    // --- ZOOM AND PAN LOGIC ---
-                    
-                    // Click to zoom all
-                    item.addEventListener('click', () => {
-                        const allCompareItems = document.querySelectorAll('.compare-item');
-                        const isZoomingIn = !item.classList.contains('zoomed');
+                    // --- CLICK & PAN LOGIC ---
+                    let isDragging = false;
+                    let startX = 0, startY = 0;
+                    let hasDragged = false;
 
-                        allCompareItems.forEach(el => {
-                            if (isZoomingIn) {
-                                el.classList.add('zoomed');
-                            } else {
-                                el.classList.remove('zoomed');
-                                el.querySelector('img').style.transformOrigin = 'center center';
-                            }
-                        });
-
-                        btnResetZoom.style.display = isZoomingIn ? 'block' : 'none';
+                    item.addEventListener('mousedown', (e) => {
+                        e.preventDefault(); 
+                        isDragging = true;
+                        hasDragged = false;
+                        startX = e.clientX;
+                        startY = e.clientY;
                     });
 
-                    // Mouse move to pan individually
                     item.addEventListener('mousemove', (e) => {
-                        if (!item.classList.contains('zoomed')) return;
-                        
-                        // Get the exact coordinates of the container
-                        const rect = item.getBoundingClientRect();
-                        
-                        // Calculate mouse position as a percentage (0 to 100%)
-                        const xPos = ((e.clientX - rect.left) / rect.width) * 100;
-                        const yPos = ((e.clientY - rect.top) / rect.height) * 100;
-                        
-                        // Move the transform origin of the image to follow the mouse
-                        img.style.transformOrigin = `${xPos}% ${yPos}%`;
+                        if (!isDragging) return;
+
+                        const dx = e.clientX - startX;
+                        const dy = e.clientY - startY;
+
+                        // Threshold to distinguish a clean 'click' from a 'drag'
+                        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                            hasDragged = true;
+                        }
+
+                        if (hasDragged && item.classList.contains('zoomed')) {
+                            img.style.transition = 'none'; // Follow mouse instantly
+                            
+                            // Add dragged distance to the previously saved position
+                            const newTx = parseFloat(img.dataset.tx) + dx;
+                            const newTy = parseFloat(img.dataset.ty) + dy;
+
+                            img.style.transform = `translate(${newTx}px, ${newTy}px) scale(${ZOOM_LEVEL})`;
+                            
+                            // Save temporarily until mouseup
+                            img.dataset.tempTx = newTx;
+                            img.dataset.tempTy = newTy;
+                        }
                     });
+
+                    const stopDrag = (e) => {
+                        if (!isDragging) return;
+                        isDragging = false;
+
+                        if (hasDragged && item.classList.contains('zoomed')) {
+                            // Drag ended: Save final coordinates 
+                            img.dataset.tx = img.dataset.tempTx;
+                            img.dataset.ty = img.dataset.tempTy;
+                        } else if (!hasDragged) {
+                            // Pure Click: Toggle global zoom
+                            const allCompareItems = document.querySelectorAll('.compare-item');
+                            const isZoomingIn = !item.classList.contains('zoomed');
+
+                            allCompareItems.forEach(el => {
+                                const elImg = el.querySelector('img');
+                                elImg.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+                                if (isZoomingIn) {
+                                    el.classList.add('zoomed');
+                                    elImg.style.transform = `translate(0px, 0px) scale(${ZOOM_LEVEL})`;
+                                    elImg.dataset.tx = 0;
+                                    elImg.dataset.ty = 0;
+                                } else {
+                                    el.classList.remove('zoomed');
+                                    elImg.style.transform = `translate(0px, 0px) scale(1)`;
+                                    elImg.dataset.tx = 0;
+                                    elImg.dataset.ty = 0;
+                                }
+                            });
+                            btnResetZoom.style.display = isZoomingIn ? 'block' : 'none';
+                        }
+                    };
+
+                    item.addEventListener('mouseup', stopDrag);
+                    item.addEventListener('mouseleave', stopDrag);
 
                     compareContainer.appendChild(item);
                 });
@@ -397,24 +436,28 @@
                 modal.style.display = 'flex';
             });
 
-            // 5. Reset Zoom Button Logic
+            // Reset Zoom Button
             btnResetZoom.addEventListener('click', () => {
                 const allCompareItems = document.querySelectorAll('.compare-item');
                 allCompareItems.forEach(el => {
                     el.classList.remove('zoomed');
-                    el.querySelector('img').style.transformOrigin = 'center center';
+                    const img = el.querySelector('img');
+                    img.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    img.style.transform = 'translate(0px, 0px) scale(1)';
+                    // Clear saved pan coordinates
+                    img.dataset.tx = 0;
+                    img.dataset.ty = 0;
                 });
                 btnResetZoom.style.display = 'none';
             });
 
-            // 6. Close Modal
+            // Close Modal
             btnCloseModal.addEventListener('click', () => {
                 modal.style.display = 'none';
-                // Reset zoom states upon closing just to be clean
-                btnResetZoom.click(); 
+                btnResetZoom.click(); // Cleans up zoom state behind the scenes
             });
 
-            // 7. Finish Selection
+            // Finish Selection
             btnDone.addEventListener('click', () => {
                 const finalSelection = Array.from(selectedFiles);
                 alert(`Ready to process ${finalSelection.length} files:\n\n` + finalSelection.join('\n'));

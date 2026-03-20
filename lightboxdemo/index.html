@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Gallery | Stefano Aguiar</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #f5f5f5;
+            --accent-color: #007aff;
+            --card-bg: #1e1e1e;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Navigation / Controls */
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid #333;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            color: #888;
+        }
+
+        /* Gallery Grid */
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .image-card {
+            position: relative;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 2/3; /* Adjust based on your typical aspect ratio */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Selection Indicator */
+        .check-ring {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.8);
+            background: rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-card.selected .check-ring {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .image-card.selected .check-ring::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .image-card.selected img {
+            opacity: 0.7;
+        }
+        
+        .filename-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 10px;
+            font-size: 0.75rem;
+            color: #ddd;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Comparison Modal */
+        #compare-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000; /* Pure black for comparison */
+            z-index: 1000;
+            padding: 2rem;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        #compare-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .compare-item {
+            flex: 1 1 0; /* Grow and shrink equally */
+            min-width: 300px;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .compare-item img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Client Gallery</h1>
+        <div class="controls">
+            <span id="selection-count">0 Selected</span>
+            <button id="btn-compare" disabled>Compare Selected</button>
+            <button id="btn-done" disabled>Finish Selection</button>
+        </div>
+    </header>
+
+    <main id="gallery"></main>
+
+    <div id="compare-modal">
+        <div class="modal-header">
+            <h2>Compare Selections</h2>
+            <button id="btn-close-modal">Close Comparison</button>
+        </div>
+        <div id="compare-container"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const galleryElement = document.getElementById('gallery');
+            const selectionCountElement = document.getElementById('selection-count');
+            const btnCompare = document.getElementById('btn-compare');
+            const btnDone = document.getElementById('btn-done');
+            const modal = document.getElementById('compare-modal');
+            const compareContainer = document.getElementById('compare-container');
+            const btnCloseModal = document.getElementById('btn-close-modal');
+
+            let selectedFiles = new Set();
+            let allImages = [];
+
+            // 1. Fetch the JSON data
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) throw new Error("Could not load data.json");
+                    return response.json();
+                })
+                .then(files => {
+                    allImages = files;
+                    renderGallery();
+                })
+                .catch(error => {
+                    galleryElement.innerHTML = `<p style="color:red; padding: 2rem;">Error: ${error.message}. Make sure you are running this on a local server, not just double-clicking the HTML file.</p>`;
+                });
+
+            // 2. Render the grid
+            function renderGallery() {
+                galleryElement.innerHTML = '';
+                allImages.forEach(filename => {
+                    // Create Card
+                    const card = document.createElement('div');
+                    card.className = 'image-card';
+                    card.dataset.filename = filename;
+
+                    // Create Image (Native Lazy Loading enabled)
+                    const img = document.createElement('img');
+                    img.src = `img/${filename}`;
+                    img.loading = 'lazy'; 
+                    img.alt = filename;
+
+                    // Create UI overlays
+                    const ring = document.createElement('div');
+                    ring.className = 'check-ring';
+                    
+                    const label = document.createElement('div');
+                    label.className = 'filename-label';
+                    label.textContent = filename;
+
+                    // Append together
+                    card.appendChild(img);
+                    card.appendChild(ring);
+                    card.appendChild(label);
+                    
+                    // Click Event
+                    card.addEventListener('click', () => toggleSelection(card, filename));
+
+                    galleryElement.appendChild(card);
+                });
+            }
+
+            // 3. Handle Selections
+            function toggleSelection(cardElement, filename) {
+                if (selectedFiles.has(filename)) {
+                    selectedFiles.delete(filename);
+                    cardElement.classList.remove('selected');
+                } else {
+                    selectedFiles.add(filename);
+                    cardElement.classList.add('selected');
+                }
+                updateUI();
+            }
+
+            // 4. Update Header Buttons
+            function updateUI() {
+                const count = selectedFiles.size;
+                selectionCountElement.textContent = `${count} Selected`;
+                
+                // Enable compare only if 2 or more are selected
+                btnCompare.disabled = count < 2;
+                // Enable done if at least 1 is selected
+                btnDone.disabled = count === 0;
+            }
+
+            // 5. Open Comparison Modal
+            btnCompare.addEventListener('click', () => {
+                compareContainer.innerHTML = '';
+                
+                selectedFiles.forEach(filename => {
+                    const item = document.createElement('div');
+                    item.className = 'compare-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = `img/${filename}`;
+                    
+                    const label = document.createElement('div');
+                    label.textContent = filename;
+                    label.style.marginTop = '10px';
+                    label.style.fontSize = '0.8rem';
+                    
+                    item.appendChild(img);
+                    item.appendChild(label);
+                    compareContainer.appendChild(item);
+                });
+
+                modal.style.display = 'flex';
+            });
+
+            // 6. Close Modal
+            btnCloseModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // 7. Dummy "Done" button for future expansion
+            btnDone.addEventListener('click', () => {
+                const finalSelection = Array.from(selectedFiles);
+                alert(`Ready to process ${finalSelection.length} files:\n\n` + finalSelection.join('\n'));
+                // In the future, this is where we will trigger the email/export process.
+            });
+        });
+    </script>
+</body>
+</html>

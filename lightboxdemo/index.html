@@ -55,7 +55,7 @@
             border-radius: 6px;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background-color 0.2s;
         }
 
         button:hover {
@@ -82,7 +82,7 @@
             border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
-            aspect-ratio: 2/3; /* Adjust based on your typical aspect ratio */
+            aspect-ratio: 2/3;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -153,7 +153,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: #000; /* Pure black for comparison */
+            background: #000;
             z-index: 1000;
             padding: 2rem;
             flex-direction: column;
@@ -164,6 +164,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            z-index: 10; /* Keep above zoomed images */
         }
 
         #compare-container {
@@ -174,22 +175,67 @@
             align-items: center;
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden; /* Prevent horizontal scroll when zooming */
         }
 
         .compare-item {
-            flex: 1 1 0; /* Grow and shrink equally */
+            flex: 1 1 0;
             min-width: 300px;
             max-width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+            overflow: hidden; /* Contains the zoomed image */
+            cursor: zoom-in;
+            border-radius: 4px;
         }
 
         .compare-item img {
-            max-width: 100%;
-            max-height: 80vh;
+            width: 100%;
+            height: calc(100% - 30px); /* Leave room for label */
             object-fit: contain;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-origin: center center;
+            pointer-events: none; /* Let the parent div handle the mouse events */
+        }
+
+        /* Zoomed State */
+        .compare-item.zoomed {
+            cursor: crosshair;
+        }
+
+        .compare-item.zoomed img {
+            transform: scale(3); /* Adjust this number to change zoom intensity */
+        }
+
+        .compare-item .label {
+            height: 30px;
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #aaa;
+            z-index: 2; /* Keep label visible */
+            background: #000;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* Reset Zoom Button */
+        #btn-reset-zoom {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: #333;
+            border: 1px solid #555;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 1010;
+        }
+
+        #btn-reset-zoom:hover {
+            background-color: #555;
         }
 
     </style>
@@ -213,6 +259,7 @@
             <button id="btn-close-modal">Close Comparison</button>
         </div>
         <div id="compare-container"></div>
+        <button id="btn-reset-zoom">Reset Zoom</button>
     </div>
 
     <script>
@@ -224,11 +271,12 @@
             const modal = document.getElementById('compare-modal');
             const compareContainer = document.getElementById('compare-container');
             const btnCloseModal = document.getElementById('btn-close-modal');
+            const btnResetZoom = document.getElementById('btn-reset-zoom');
 
             let selectedFiles = new Set();
             let allImages = [];
 
-            // 1. Fetch the JSON data
+            // 1. Fetch JSON
             fetch('data.json')
                 .then(response => {
                     if (!response.ok) throw new Error("Could not load data.json");
@@ -239,25 +287,22 @@
                     renderGallery();
                 })
                 .catch(error => {
-                    galleryElement.innerHTML = `<p style="color:red; padding: 2rem;">Error: ${error.message}. Make sure you are running this on a local server, not just double-clicking the HTML file.</p>`;
+                    galleryElement.innerHTML = `<p style="color:red; padding: 2rem;">Error: ${error.message}. Please run on a local server.</p>`;
                 });
 
-            // 2. Render the grid
+            // 2. Render Grid
             function renderGallery() {
                 galleryElement.innerHTML = '';
                 allImages.forEach(filename => {
-                    // Create Card
                     const card = document.createElement('div');
                     card.className = 'image-card';
                     card.dataset.filename = filename;
 
-                    // Create Image (Native Lazy Loading enabled)
                     const img = document.createElement('img');
                     img.src = `img/${filename}`;
                     img.loading = 'lazy'; 
                     img.alt = filename;
 
-                    // Create UI overlays
                     const ring = document.createElement('div');
                     ring.className = 'check-ring';
                     
@@ -265,14 +310,11 @@
                     label.className = 'filename-label';
                     label.textContent = filename;
 
-                    // Append together
                     card.appendChild(img);
                     card.appendChild(ring);
                     card.appendChild(label);
                     
-                    // Click Event
                     card.addEventListener('click', () => toggleSelection(card, filename));
-
                     galleryElement.appendChild(card);
                 });
             }
@@ -289,20 +331,17 @@
                 updateUI();
             }
 
-            // 4. Update Header Buttons
             function updateUI() {
                 const count = selectedFiles.size;
                 selectionCountElement.textContent = `${count} Selected`;
-                
-                // Enable compare only if 2 or more are selected
                 btnCompare.disabled = count < 2;
-                // Enable done if at least 1 is selected
                 btnDone.disabled = count === 0;
             }
 
-            // 5. Open Comparison Modal
+            // 4. Open Modal & Build Comparison
             btnCompare.addEventListener('click', () => {
                 compareContainer.innerHTML = '';
+                btnResetZoom.style.display = 'none'; // Ensure reset button is hidden initially
                 
                 selectedFiles.forEach(filename => {
                     const item = document.createElement('div');
@@ -312,28 +351,73 @@
                     img.src = `img/${filename}`;
                     
                     const label = document.createElement('div');
+                    label.className = 'label';
                     label.textContent = filename;
-                    label.style.marginTop = '10px';
-                    label.style.fontSize = '0.8rem';
                     
                     item.appendChild(img);
                     item.appendChild(label);
+                    
+                    // --- ZOOM AND PAN LOGIC ---
+                    
+                    // Click to zoom all
+                    item.addEventListener('click', () => {
+                        const allCompareItems = document.querySelectorAll('.compare-item');
+                        const isZoomingIn = !item.classList.contains('zoomed');
+
+                        allCompareItems.forEach(el => {
+                            if (isZoomingIn) {
+                                el.classList.add('zoomed');
+                            } else {
+                                el.classList.remove('zoomed');
+                                el.querySelector('img').style.transformOrigin = 'center center';
+                            }
+                        });
+
+                        btnResetZoom.style.display = isZoomingIn ? 'block' : 'none';
+                    });
+
+                    // Mouse move to pan individually
+                    item.addEventListener('mousemove', (e) => {
+                        if (!item.classList.contains('zoomed')) return;
+                        
+                        // Get the exact coordinates of the container
+                        const rect = item.getBoundingClientRect();
+                        
+                        // Calculate mouse position as a percentage (0 to 100%)
+                        const xPos = ((e.clientX - rect.left) / rect.width) * 100;
+                        const yPos = ((e.clientY - rect.top) / rect.height) * 100;
+                        
+                        // Move the transform origin of the image to follow the mouse
+                        img.style.transformOrigin = `${xPos}% ${yPos}%`;
+                    });
+
                     compareContainer.appendChild(item);
                 });
 
                 modal.style.display = 'flex';
             });
 
+            // 5. Reset Zoom Button Logic
+            btnResetZoom.addEventListener('click', () => {
+                const allCompareItems = document.querySelectorAll('.compare-item');
+                allCompareItems.forEach(el => {
+                    el.classList.remove('zoomed');
+                    el.querySelector('img').style.transformOrigin = 'center center';
+                });
+                btnResetZoom.style.display = 'none';
+            });
+
             // 6. Close Modal
             btnCloseModal.addEventListener('click', () => {
                 modal.style.display = 'none';
+                // Reset zoom states upon closing just to be clean
+                btnResetZoom.click(); 
             });
 
-            // 7. Dummy "Done" button for future expansion
+            // 7. Finish Selection
             btnDone.addEventListener('click', () => {
                 const finalSelection = Array.from(selectedFiles);
                 alert(`Ready to process ${finalSelection.length} files:\n\n` + finalSelection.join('\n'));
-                // In the future, this is where we will trigger the email/export process.
             });
         });
     </script>

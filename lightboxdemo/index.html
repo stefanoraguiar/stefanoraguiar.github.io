@@ -275,18 +275,16 @@
             let allImages = [];
             const ZOOM_LEVEL = 3; // Easily adjust global magnification here
 
-            fetch('data.json')
-                .then(response => {
-                    if (!response.ok) throw new Error("Could not load data.json");
-                    return response.json();
-                })
-                .then(files => {
-                    allImages = files;
-                    renderGallery();
-                })
-                .catch(error => {
-                    galleryElement.innerHTML = `<p style="color:red; padding: 2rem;">Error: ${error.message}. Please run on a local server.</p>`;
-                });
+            // Bubble will dynamically populate this array with URLs from your database
+            const allImages = [ 
+                /* BUBBLE DYNAMIC DATA HERE: 
+                   Search for Images's URLs: formatted as text 
+                   (Set the text to "This URL", separated by commas) 
+                */ 
+            ];
+            
+            // Call your existing render function directly
+            renderGallery();
 
             function renderGallery() {
                 galleryElement.innerHTML = '';

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Segredo do Porto</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Import the custom Moglan Demo font */
+        @font-face {
+            font-family: 'Moglan Demo';
+            /* Make sure the font file in your folder matches this exact name! */
+            src: url('MoglanDemo.ttf') format('truetype'); 
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* CSS Variables for our color palette */
+        :root {
+            --bg-color: #050505;
+            --text-main: #f0f0f0;
+            --accent-red: #8a031a; /* Velvet Red */
+            --text-muted: #888888;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; 
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Applying Moglan Demo to all headings */
+        h1, h2, h3 {
+            font-family: 'Moglan Demo', serif;
+            font-weight: normal;
+            text-transform: none; /* Removing uppercase to let Moglan's natural curves show */
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-red);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hovering {
+            width: 40px;
+            height: 40px;
+            background-color: var(--text-main);
+        }
+
+        /* Typography & Layout Utilities */
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-padding {
+            padding: 15vh 0;
+        }
+
+        .text-accent {
+            color: var(--accent-red);
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Navigation / Minimal Logo Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            mix-blend-mode: difference;
+        }
+
+        .logo-placeholder svg {
+            height: 40px;
+            fill: var(--text-main);
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-left: 30px;
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://picsum.photos/id/1011/1920/1080?grayscale') center/cover no-repeat;
+            opacity: 0.3;
+            z-index: -1;
+            filter: contrast(1.2) brightness(0.7);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(4rem, 10vw, 10rem); /* Made slightly larger for Moglan */
+            line-height: 0.9;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* The Concept Section */
+        .concept {
+            display: flex;
+            align-items: center;
+            gap: 10%;
+        }
+
+        .concept-text {
+            flex: 1;
+        }
+
+        .concept-text h2 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+        }
+
+        .concept-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .concept-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .concept-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+
+        .concept-image img:hover {
+            filter: grayscale(0%);
+        }
+
+        /* The Black Card Specific Section (Artistic Overlap) */
+        .black-card-section {
+            position: relative;
+            margin-top: 10vh;
+            background-color: #0a0a0a;
+            padding: 10vh 5%;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .huge-bg-text {
+            position: absolute;
+            top: 10%;
+            left: -5%;
+            font-size: 15vw;
+            font-family: 'Moglan Demo', serif;
+            color: rgba(255, 255, 255, 0.02);
+            z-index: 0;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .card-details {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+        }
+
+        .detail-item h3 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-red);
+        }
+
+        .detail-item p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        /* Artistic Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-top: 10vh;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(80%) contrast(1.2);
+            transition: transform 0.7s ease, filter 0.7s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%) contrast(1);
+        }
+
+        /* Staggered Grid Positions */
+        .item-1 { grid-column: 1 / 7; height: 60vh; }
+        .item-2 { grid-column: 8 / 13; height: 40vh; margin-top: 10vh; }
+        .item-3 { grid-column: 2 / 6; height: 50vh; margin-top: -10vh; z-index: 2;}
+        .item-4 { grid-column: 7 / 12; height: 70vh; }
+
+        /* Footer / Contact */
+        footer {
+            text-align: center;
+            padding: 15vh 0 5vh;
+        }
+
+        .footer-cta {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .footer-cta::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background-color: var(--accent-red);
+            transition: all 0.4s ease;
+            transform: translateX(-50%);
+        }
+
+        .footer-cta:hover::after {
+            width: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .concept { flex-direction: column; }
+            .concept-image { margin-top: 50px; }
+            .item-1, .item-2, .item-3, .item-4 { grid-column: 1 / -1; height: 50vh; margin-top: 0; }
+            .gallery { gap: 40px; }
+            .cursor { display: none; }
+            * { cursor: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+
+    <header>
+        <div class="logo-placeholder interactive">
+            <svg width="100%" height="100%" viewBox="0 0 1998 1950" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M909.75,1946.47c-36.917,-3.416 -87.125,-14.25 -126.5,-26.958c-35.333,-11.458 -102,-44.042 -215.5,-105.125c-35.042,-18.917 -127.75,-68.542 -206.208,-110.083c-78.459,-41.875 -191.959,-102.334 -252.084,-134.25l-109.458,-58.292l0.917,-11.458c0.916,-10.834 11.458,-22.625 132.708,-147.584c72.25,-75.041 149.458,-154.416 171.792,-177.041l40,-40.917l-12.709,-18c-45.875,-63.583 -80.916,-148.208 -95.5,-230.375c-4.666,-26.042 -5.875,-47.458 -5.875,-106.958c0.292,-69.167 0.917,-77.209 8.667,-114.709c11.167,-51.458 22.958,-87.458 43.708,-130.25c20.459,-42.791 38.125,-70.083 67.584,-105.75c32.25,-38.458 256.125,-267.916 288.041,-294.583c54.25,-45.875 120.917,-83.083 190.375,-106.375c64.5,-21.375 89.917,-25.417 172.084,-27.292c80,-1.875 115.666,1.542 173.041,16.417c63.25,16.417 95.209,31.625 582,279.375c85.292,43.417 174.25,89 197.5,101.083c58.292,30.375 58.625,26.042 -7.458,96.125c-52.708,55.834 -185.75,196.584 -248.042,261.709l-35.958,38.125l13.958,20.791c32.542,48.375 62,121.875 77.209,194.125c10.833,51.792 13.958,155.959 6.208,209.625c-10.833,71.959 -35.042,145.75 -66.042,200.292c-18,31.958 -48.375,71.958 -84.958,113.5c-16.125,18 -57.667,64.5 -92.417,103.875c-34.708,39.083 -78.458,88.042 -96.75,108.833c-106.041,118.75 -239.375,188.209 -389.75,202.5c-37.5,3.417 -82.791,3.417 -120.625,-0.291l0.042,-0.084Zm106.042,-155.041c73.166,-9 148.833,-40 211.166,-86.834c50.542,-37.833 102.959,-97.041 135.834,-153.166c36.583,-62.625 63.875,-163.709 63.875,-235.667c-0,-50.542 -17.042,-132.417 -39.084,-187.292c-9.916,-24.791 -37.833,-76.916 -39.708,-74.125c-0.625,0.292 1.25,15.209 3.708,32.542c2.5,17.375 3.709,35.042 2.5,38.75c-0.916,4.042 -11.458,17.667 -23.25,30.708l-21.708,23.584l4.333,27.583c5.875,36.292 5.875,121.542 0,157.833c-10.25,62.625 -37.208,129.917 -69.458,172.417c-33.167,43.417 -82.5,82.5 -129,101.708c-38.75,16.125 -67.292,22.334 -113.167,24.167c-49,1.875 -84.333,-3.083 -124.041,-17.667c-54.875,-19.833 -87.125,-43.708 -150.084,-110.708c-23.875,-25.125 -86.5,-91.167 -139.541,-146.375c-53.042,-55.208 -105.125,-109.75 -115.667,-120.917l-19.542,-20.458l-11.166,12.417c-6.5,6.833 -45.292,47.458 -86.5,89.916c-40.917,42.792 -81.875,85.584 -91.167,95.209l-16.417,17.666l7.459,4.334c4.041,2.5 48.375,26.041 98.625,52.708c94.25,49.625 189.458,99.833 324.041,171.167c132.709,70.375 160.625,82.5 217.042,94.25c49.292,10.25 76.917,11.458 120.917,6.208l-0,0.042Zm22.333,-292.709c27.292,-10.541 44.958,-22 66.667,-44.041c22,-22.334 37.208,-47.459 47.458,-78.125c6.5,-19.834 17.042,-65.75 17.042,-75.042c-0,-1.25 -17.042,8.375 -37.5,22c-49.917,32.542 -150.709,83.708 -164.959,83.708c-9.625,0 -15.5,-4.958 -67.916,-58c-51.792,-52.708 -196.584,-201.875 -312.542,-321.875c-28.833,-30.083 -52.417,-57.666 -65.75,-77.5c-59.208,-89 -91.792,-189.458 -97.667,-303.583c-2.166,-46.833 -2.791,-46.5 -22.625,13.042c-28.541,86.208 -28.833,153.791 -1.25,241.875c13.042,42.5 35.334,87.125 59.542,119.375c9.917,13.041 47.458,54.25 83.083,91.458c35.667,36.917 128.042,133.333 205.292,213.625c80.917,84.333 146.958,150.375 155.667,155.958c43.708,27.917 90.541,33.792 135.5,17.042l-0.042,0.083Zm557.208,-244.958c26.375,-78.458 27.292,-160.917 2.792,-238.458c-17.667,-55.834 -45.583,-108.209 -78.458,-146.042c-31.959,-36.917 -408.042,-414.583 -421.709,-423.25c-32.541,-20.792 -78.458,-29.458 -115.666,-21.708c-43.417,9 -91.792,45.291 -116.584,87.75c-11.791,20.166 -26.375,58.625 -29.75,78.75l-2.166,13.333l31.333,-18.625c64.792,-38.458 151.333,-78.458 166.833,-76.917c9,0.917 34.709,25.75 207.459,200.917c108.541,110.083 205.875,211.167 216.75,224.792c66.958,86.5 108.833,206.208 118.125,338l2.166,31l5.292,-12.709c3.083,-6.833 9,-23.583 13.625,-36.916l-0.042,0.083Zm-550.083,-56.75c67.583,-42.167 113.5,-80 181.083,-149.75c26.959,-27.583 51.167,-53.625 53.625,-57.667c4.667,-7.125 3.084,-8.666 -88.375,-102.625c-51.166,-52.416 -116.916,-118.75 -145.75,-147.583l-52.708,-52.417l-21.375,11.792c-66.667,37.208 -131.792,86.5 -186.042,140.792c-33.791,33.791 -75.958,81.541 -75.958,85.583c0.292,0.917 65.417,68.833 145.125,150.375c131.792,134.875 145.417,148.208 151.333,145.125c3.709,-1.875 21.084,-12.417 39.084,-23.583l-0.042,-0.042Zm-401.875,-366.5c-8.042,-45.292 -7.458,-46.5 19.833,-76.292l24.5,-26.375l-3.083,-20.791c-1.542,-11.459 -2.167,-49.292 -1.25,-84.334c1.25,-58.916 2.167,-66.375 11.167,-100.791c28.541,-107.917 98.291,-193.5 187.916,-230.709c48.667,-20.458 65.125,-23.25 131.792,-23.25c56.75,0 62,0.625 88.375,8.667c34.417,10.25 66.375,25.125 92.083,42.5c17.667,12.083 165.875,159.375 312.875,310.708l47.459,49.292l14.25,-15.208c7.75,-8.042 51.458,-54.584 97.041,-102.959l83.084,-88.041l-18,-9.917c-9.917,-5.292 -109.459,-55.833 -221.084,-112.25c-111.625,-56.417 -230.375,-116.583 -263.875,-133.333c-96.75,-49 -150.708,-64.5 -226.041,-64.167c-68.542,0.292 -124.334,13.958 -190.084,46.208c-47.458,23.584 -79.083,46.834 -120,88.042c-65.75,66.042 -101.083,127.125 -124.041,215.208c-26.375,99.542 -16.75,196.917 28.208,293.625c11.458,24.167 31,59.542 32.542,58c0.291,-0.291 -1.25,-11.166 -3.709,-23.875l0.042,0.042Z" style="fill:url(#_Linear1);fill-rule:nonzero;"/><defs><linearGradient id="_Linear1" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(2328.07,1949.37,-1949.37,2328.07,29.2496,2.84217e-14)"><stop offset="0" style="stop-color:#fdfefe;stop-opacity:1"/><stop offset="1" style="stop-color:#d1d1d1;stop-opacity:1"/></linearGradient></defs>
+            </svg>
+        </div>
+        <nav class="nav-links">
+            <a href="#concept" class="interactive">O Segredo</a>
+            <a href="#portfolio" class="interactive">Portfolio</a>
+            <a href="#inquire" class="interactive">Saiba Mais</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="container hero-content">
+            <h1 class="reveal">O Segredo<br><span class="text-accent">Do Porto</span></h1>
+            <p class="reveal" style="transition-delay: 0.2s;">Intimidade. Mistério. Exclusividade.</p>
+        </div>
+    </section>
+
+    <section id="concept" class="section-padding container concept">
+        <div class="concept-text reveal">
+            <h2>Muito Além da Fotografia</h2>
+            <p>This is not a traditional photoshoot. It is an invitation to an underground, highly exclusive experience. Designed for those who seek to capture their sensual, edgy side without the constraints of traditional studios.</p>
+            <p>We operate in shadows, delivering high-end, luxurious portraiture that empowers. But access is strictly guarded by the <span class="text-accent">Black Card</span>.</p>
+        </div>
+        <div class="concept-image reveal" style="transition-delay: 0.3s;">
+            <img src="https://images.unsplash.com/photo-1616086782559-009c95191986?q=80&w=800&auto=format&fit=crop" alt="Sensual silhouette placeholder">
+        </div>
+    </section>
+
+    <section class="black-card-section">
+        <div class="huge-bg-text">THE BLACK CARD</div>
+        <div class="container card-details">
+            <div class="detail-item reveal">
+                <h3>01. The Artifact</h3>
+                <p>A physical, matte black foldable card bearing our cryptic silver seal. This card is your sole entry ticket to the studio.</p>
+            </div>
+            <div class="detail-item reveal" style="transition-delay: 0.2s;">
+                <h3>02. The Clock</h3>
+                <p>From the moment the card is placed in your hands, the timer begins. You have exactly 30 days to claim your session. Once the sand runs out, the invitation turns to dust.</p>
+            </div>
+            <div class="detail-item reveal" style="transition-delay: 0.4s;">
+                <h3>03. The Value</h3>
+                <p>Art has no fixed price. Upon the completion of your session, you decide its worth. Pay what you want, as long as you hold the card.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="section-padding container">
+        <h2 class="reveal" style="text-align: center; margin-bottom: 50px;">Glimpses of the Secret</h2>
+        <div class="gallery">
+            <div class="gallery-item item-1 reveal interactive">
+                <img src="https://images.unsplash.com/photo-1534068590799-09895a701e3e?q=80&w=1000&auto=format&fit=crop" alt="Boudoir dark aesthetic 1">
+            </div>
+            <div class="gallery-item item-2 reveal interactive">
+                <img src="https://images.unsplash.com/photo-1520853504280-baebdcac933b?q=80&w=800&auto=format&fit=crop" alt="Sensual aesthetic 2">
+            </div>
+            <div class="gallery-item item-3 reveal interactive">
+                <img src="https://images.unsplash.com/photo-1588665796248-18e32c842b47?q=80&w=800&auto=format&fit=crop" alt="Luxury fabric texture">
+            </div>
+            <div class="gallery-item item-4 reveal interactive">
+                <img src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?q=80&w=1000&auto=format&fit=crop" alt="Dark portrait placeholder">
+            </div>
+        </div>
+    </section>
+
+    <footer id="inquire" class="section-padding container reveal">
+        <h2 class="footer-cta interactive">Find The Card</h2>
+        <p style="margin-top: 20px; color: var(--text-muted); font-weight: 300;">By invitation or inquiry only.</p>
+        <p style="margin-top: 50px; font-size: 0.8rem; letter-spacing: 2px; font-family: 'Montserrat', sans-serif;">© O SEGREDO DO PORTO</p>
+    </footer>
+
+    <script>
+        // --- Custom Cursor Logic ---
+        const cursor = document.getElementById('cursor');
+        const interactiveElements = document.querySelectorAll('.interactive, a, button');
+
+        // Move cursor with mouse
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Expand cursor on hover
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hovering');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hovering');
+            });
+        });
+
+        // --- Scroll Reveal Logic using Intersection Observer ---
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                } else {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => {
+            revealOnScroll.observe(el);
+        });
+    </script>
+</body>
+</html>

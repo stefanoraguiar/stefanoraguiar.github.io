@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Álbum de Família | Stefano Aguiar | Fotografia de Retrato no Porto</title>
+    
+    <!-- Meta SEO em Português -->
+    <meta name="description" content="Álbum de Família: Um projeto fotográfico e documental sobre a não-monogamia e as múltiplas formas de amar e construir um lar, por Stefano Aguiar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stefanoaguiar.com/project-album-de-familia.html">
+    <meta property="og:title" content="Álbum de Família | Stefano Aguiar">
+    <meta property="og:description" content="Um projeto sobre a não-monogamia e as novas estruturas familiares.">
+    <meta property="og:image" content="https://stefanoaguiar.com/img/social-share.jpg">
+
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    
+    <!-- LIGHT THEME OVERRIDE -->
+    <style>
+        :root {
+            /* Inverting the color palette for this page only */
+            --bg-color: #f7f5f0; /* Off-white / warm paper tone */
+            --text-color: #1a1a1a; /* Very dark grey for text */
+            --accent-color: #b89025; /* Slightly darker gold to maintain contrast on light background */
+        }
+
+        /* Adjustments for specific elements to look good on light background */
+        .project-description p { color: #444; }
+        .meta-value { color: #333; }
+        .logo a { color: var(--text-color); }
+        .nav-links a { color: var(--text-color); }
+        .hamburger .bar { background-color: var(--text-color); }
+        .project-gallery { border-left: 1px solid #ddd; }
+        footer { border-top: 1px solid #ddd; }
+        footer p { color: #666; }
+        .legal-disclaimer a { color: #666; }
+        
+        /* Dropdown fix for light theme */
+        .dropdown-content { background-color: #fff; border: 1px solid #eee; }
+        .dropdown-content a { color: #333; border-bottom: 1px solid #eee; }
+        .dropdown-content a:hover { background-color: #f0f0f0; }
+
+        /* Video styling for the masonry grid */
+        .gallery-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 2px; /* Optional: adds a tiny softness to the media */
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: transform 0.8s ease;
+        }
+        .gallery-video:hover {
+            transform: scale(1.02); /* Slightly gentler zoom for video/light theme */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo"><a href="index.html">STEFANO<span>AGUIAR</span></a></div>
+            
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+            <ul class="nav-links">
+                <li class="dropdown">
+                    <a href="index.html#work" class="dropbtn">Obras ▾</a>
+                    <div class="dropdown-content">
+                        <a href="project-nowhere-to-go.html">Nowhere to Go</a>
+                        <a href="project-album-de-familia.html">Álbum de Família</a>
+                        <a href="collected.html">Collected Opportunities</a>
+                    </div>
+                </li>
+                <li><a href="index.html#philosophy">Filosofia</a></li>
+                <li><a href="index.html#contact">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="project-layout">
+        
+        <aside class="project-sidebar">
+            <div class="sidebar-content">
+                <span class="meta-label">Ano</span>
+                <p class="meta-value">2026</p>
+
+                <span class="meta-label">Localização</span>
+                <p class="meta-value">Porto, Portugal</p>
+
+                <span class="meta-label">Contexto</span>
+                <div class="project-description">
+                    <p>O álbum de família tradicional sempre teve margens muito rígidas. Este projeto nasce da necessidade urgente de expandir essas margens.</p>
+                    <p>Uma exploração visual íntima e luminosa sobre a não-monogamia e as múltiplas formas de amar e construir um lar. Aqui, a família não se define exclusivamente pela consanguinidade, pelo género ou pela exclusividade de um casal, mas sim pela escolha consciente, pelo cuidado mútuo e pela multiplicidade de afetos.</p>
+                    <p>Nestas imagens e fragmentos em vídeo, documentamos a banalidade e a beleza de quotidianos que desafiam a norma, provando que o amor, quando livre de formatações, ocupa exatamente o espaço de que precisa.</p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="project-gallery">
+            <div class="project-title-container">
+                <h1>Álbum de<br>Família</h1>
+            </div>
+
+            <!-- Changed to grid-3 to give more breathing room to vertical videos and lighter aesthetic -->
+            <div class="masonry-grid grid-3">
+                
+                <!-- Exemplo de Fotografia (Mantém a class gallery-trigger para o Lightbox) -->
+                <a href="img/familia-placeholder-1-2500.webp" class="gallery-trigger">
+                    <img src="img/familia-placeholder-1-600.webp" alt="Retrato de família não-monogâmica">
+                </a>
+
+                <!-- Exemplo de Vídeo Vertical (Autoplay, Loop, Mute para efeito galeria) -->
+                <video class="gallery-video" autoplay loop muted playsinline>
+                    <source src="vid/familia-vertical-1.mp4" type="video/mp4">
+                    O seu browser não suporta a tag de vídeo.
+                </video>
+
+                <a href="img/familia-placeholder-2-2500.webp" class="gallery-trigger">
+                    <img src="img/familia-placeholder-2-600.webp" alt="Detalhe de mãos dadas">
+                </a>
+
+                <a href="img/familia-placeholder-3-2500.webp" class="gallery-trigger">
+                    <img src="img/familia-placeholder-3-600.webp" alt="Retrato em casa">
+                </a>
+
+                <!-- Exemplo de Vídeo Vertical -->
+                <video class="gallery-video" autoplay loop muted playsinline>
+                    <source src="vid/familia-vertical-2.mp4" type="video/mp4">
+                    O seu browser não suporta a tag de vídeo.
+                </video>
+                
+            </div>
+        </section>
+    </main>
+
+    <div id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="" alt="Modo Ecrã Inteiro">
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Stefano Aguiar. Based in Porto, Portugal.</p>
+        <p class="legal-disclaimer">
+            All content in this website is protected. All featured models are 21 years of age or older. 
+            <br>
+            <a href="privacy.html" style="color: #666; text-decoration: underline;">Privacy Policy</a>
+        </p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -5,30 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Álbum de Família | Stefano Aguiar | Fotografia de Retrato no Porto</title>
     
-    <!-- Meta SEO em Português -->
     <meta name="description" content="Álbum de Família: Um projeto fotográfico e documental sobre a não-monogamia e as múltiplas formas de amar e construir um lar, por Stefano Aguiar.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://stefanoaguiar.com/project-album-de-familia.html">
     <meta property="og:title" content="Álbum de Família | Stefano Aguiar">
     <meta property="og:description" content="Um projeto sobre a não-monogamia e as novas estruturas familiares.">
-    <meta property="og:image" content="https://stefanoaguiar.com/img/social-share.jpg">
-
+    
     <link rel="stylesheet" href="style.css">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
     
-    <!-- LIGHT THEME OVERRIDE -->
+    <!-- LIGHT THEME & CUSTOM GRID OVERRIDES -->
     <style>
         :root {
-            /* Inverting the color palette for this page only */
-            --bg-color: #f7f5f0; /* Off-white / warm paper tone */
-            --text-color: #1a1a1a; /* Very dark grey for text */
-            --accent-color: #b89025; /* Slightly darker gold to maintain contrast on light background */
+            --bg-color: #f7f5f0; 
+            --text-color: #1a1a1a; 
+            --accent-color: #b89025; 
         }
 
-        /* Adjustments for specific elements to look good on light background */
         .project-description p { color: #444; }
         .meta-value { color: #333; }
         .logo a { color: var(--text-color); }
@@ -39,23 +35,90 @@
         footer p { color: #666; }
         .legal-disclaimer a { color: #666; }
         
-        /* Dropdown fix for light theme */
         .dropdown-content { background-color: #fff; border: 1px solid #eee; }
         .dropdown-content a { color: #333; border-bottom: 1px solid #eee; }
         .dropdown-content a:hover { background-color: #f0f0f0; }
 
-        /* Video styling for the masonry grid */
-        .gallery-video {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 2px; /* Optional: adds a tiny softness to the media */
-            margin-bottom: 2rem;
-            cursor: pointer;
-            transition: transform 0.8s ease;
+        /* SIDE-BY-SIDE MEDIA PAIRS */
+        .media-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            align-items: stretch;
         }
-        .gallery-video:hover {
-            transform: scale(1.02); /* Slightly gentler zoom for video/light theme */
+
+        /* Responsive: stack on mobile */
+        @media (max-width: 1024px) {
+            .media-pair { grid-template-columns: 1fr; gap: 1rem; }
+        }
+
+        /* YOUTUBE VIDEO PLACEHOLDER (Vertical 9:16) */
+        .video-placeholder {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            background-color: #e8e4db; /* Subtle warm grey */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .video-placeholder:hover {
+            background-color: #ded9cd;
+        }
+
+        .play-button {
+            width: 70px;
+            height: 70px;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .play-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+            margin-left: 4px; /* visually center the play triangle */
+        }
+
+        .video-placeholder:hover .play-button {
+            transform: scale(1.1);
+            background: var(--accent-color);
+        }
+
+        /* YOUTUBE LIGHTBOX OVERLAY */
+        #yt-lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 2000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #yt-lightbox.active { opacity: 1; pointer-events: all; }
+        
+        .close-yt-lightbox {
+            position: absolute; top: 2rem; right: 2rem; font-size: 3rem; color: #fff;
+            cursor: pointer; font-family: var(--font-body); transition: color 0.3s;
+            z-index: 2001;
+        }
+        .close-yt-lightbox:hover { color: var(--accent-color); }
+        
+        /* Container forcing vertical video aspect ratio in fullscreen */
+        .yt-container {
+            position: relative;
+            width: 90%;
+            max-width: 500px; /* Limits width so vertical video doesn't stretch weirdly */
+            aspect-ratio: 9 / 16;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .yt-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
     </style>
 </head>
@@ -110,45 +173,90 @@
                 <h1>Álbum de<br>Família</h1>
             </div>
 
-            <!-- Changed to grid-3 to give more breathing room to vertical videos and lighter aesthetic -->
-            <div class="masonry-grid grid-3">
+            <!-- PAIR 1 -->
+            <div class="media-pair">
+                <a href="img/album-de-familia/22688-2500.webp" class="gallery-trigger">
+                    <img src="img/album-de-familia/22688-600.webp" 
+                         srcset="img/album-de-familia/22688-600.webp 600w, img/album-de-familia/22688-1200.webp 1200w" 
+                         sizes="(max-width: 1024px) 100vw, 50vw" 
+                         alt="Álbum de Família 22688">
+                </a>
                 
-                <!-- Exemplo de Fotografia (Mantém a class gallery-trigger para o Lightbox) -->
-                <a href="img/familia-placeholder-1-2500.webp" class="gallery-trigger">
-                    <img src="img/familia-placeholder-1-600.webp" alt="Retrato de família não-monogâmica">
-                </a>
-
-                <!-- Exemplo de Vídeo Vertical (Autoplay, Loop, Mute para efeito galeria) -->
-                <video class="gallery-video" autoplay loop muted playsinline>
-                    <source src="vid/familia-vertical-1.mp4" type="video/mp4">
-                    O seu browser não suporta a tag de vídeo.
-                </video>
-
-                <a href="img/familia-placeholder-2-2500.webp" class="gallery-trigger">
-                    <img src="img/familia-placeholder-2-600.webp" alt="Detalhe de mãos dadas">
-                </a>
-
-                <a href="img/familia-placeholder-3-2500.webp" class="gallery-trigger">
-                    <img src="img/familia-placeholder-3-600.webp" alt="Retrato em casa">
-                </a>
-
-                <!-- Exemplo de Vídeo Vertical -->
-                <video class="gallery-video" autoplay loop muted playsinline>
-                    <source src="vid/familia-vertical-2.mp4" type="video/mp4">
-                    O seu browser não suporta a tag de vídeo.
-                </video>
-                
+                <!-- Replace 'YOUR_YOUTUBE_ID' with the actual 11-character video ID -->
+                <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_1">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
             </div>
+
+            <!-- PAIR 2 -->
+            <div class="media-pair">
+                <a href="img/album-de-familia/22728-2500.webp" class="gallery-trigger">
+                    <img src="img/album-de-familia/22728-600.webp" 
+                         srcset="img/album-de-familia/22728-600.webp 600w, img/album-de-familia/22728-1200.webp 1200w" 
+                         sizes="(max-width: 1024px) 100vw, 50vw" 
+                         alt="Álbum de Família 22728">
+                </a>
+                
+                <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_2">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAIR 3 -->
+            <div class="media-pair">
+                <a href="img/album-de-familia/22790-2500.webp" class="gallery-trigger">
+                    <img src="img/album-de-familia/22790-600.webp" 
+                         srcset="img/album-de-familia/22790-600.webp 600w, img/album-de-familia/22790-1200.webp 1200w" 
+                         sizes="(max-width: 1024px) 100vw, 50vw" 
+                         alt="Álbum de Família 22790">
+                </a>
+                
+                <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_3">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAIR 4 -->
+            <div class="media-pair">
+                <a href="img/album-de-familia/22864-2500.webp" class="gallery-trigger">
+                    <img src="img/album-de-familia/22864-600.webp" 
+                         srcset="img/album-de-familia/22864-600.webp 600w, img/album-de-familia/22864-1200.webp 1200w" 
+                         sizes="(max-width: 1024px) 100vw, 50vw" 
+                         alt="Álbum de Família 22864">
+                </a>
+                
+                <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_4">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </main>
 
+    <!-- Standard Image Lightbox (handled by script.js) -->
     <div id="lightbox">
         <span class="close-lightbox">&times;</span>
         <img id="lightbox-img" src="" alt="Modo Ecrã Inteiro">
     </div>
 
+    <!-- YouTube Video Lightbox -->
+    <div id="yt-lightbox">
+        <span class="close-yt-lightbox">&times;</span>
+        <div class="yt-container">
+            <iframe id="yt-iframe" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <footer>
-        <p>&copy; 2026 Stefano Aguiar. Based in Porto, Portugal.</p>
+        <p>&copy; 2026 Stefano Aguiar. Porto, Portugal.</p>
         <p class="legal-disclaimer">
             All content in this website is protected. All featured models are 21 years of age or older. 
             <br>
@@ -156,6 +264,49 @@
         </p>
     </footer>
 
+    <!-- Master Script (for images, menu, age-gate) -->
     <script src="script.js"></script>
+
+    <!-- Page Specific Script for YouTube Lightbox -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ytTriggers = document.querySelectorAll('.yt-trigger');
+            const ytLightbox = document.getElementById('yt-lightbox');
+            const ytIframe = document.getElementById('yt-iframe');
+            const closeYtBtn = document.querySelector('.close-yt-lightbox');
+
+            // Open Video Lightbox
+            ytTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const videoId = trigger.getAttribute('data-youtube-id');
+                    // Add ?autoplay=1 to force play when opened
+                    ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                    ytLightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            // Close Video Lightbox (Stop video playback by clearing src)
+            const closeYtLightbox = () => {
+                ytLightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                setTimeout(() => { ytIframe.src = ''; }, 300);
+            };
+
+            closeYtBtn.addEventListener('click', closeYtLightbox);
+            
+            ytLightbox.addEventListener('click', (e) => {
+                if (e.target === ytLightbox) {
+                    closeYtLightbox();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && ytLightbox.classList.contains('active')) {
+                    closeYtLightbox();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

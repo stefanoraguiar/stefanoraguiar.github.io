@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Álbum de Família | Stefano Aguiar | Fotografia de Retrato no Porto</title>
+    <title>Álbum de Família | Stefano Aguiar | Fotografia de Retrato</title>
     
     <meta name="description" content="Álbum de Família: Um projeto fotográfico e documental sobre a não-monogamia e as múltiplas formas de amar e construir um lar, por Stefano Aguiar.">
     <meta property="og:type" content="website">
@@ -30,7 +30,7 @@
         .logo a { color: var(--text-color); }
         .nav-links a { color: var(--text-color); }
         .hamburger .bar { background-color: var(--text-color); }
-        .project-gallery { border-left: 1px solid #ddd; }
+        .project-gallery { border-left: 1px solid #ddd; padding-bottom: 4rem; }
         footer { border-top: 1px solid #ddd; }
         footer p { color: #666; }
         .legal-disclaimer a { color: #666; }
@@ -48,43 +48,43 @@
             align-items: stretch;
         }
 
-        /* Responsive: stack on mobile */
         @media (max-width: 1024px) {
             .media-pair { grid-template-columns: 1fr; gap: 1rem; }
         }
 
-/* YOUTUBE VIDEO PLACEHOLDER (Vertical 9:16) */
+        /* YOUTUBE VIDEO PLACEHOLDER */
         .video-placeholder {
             position: relative;
             width: 100%;
             aspect-ratio: 9 / 16;
-            background-color: #111; /* Darker background while image loads */
+            background-color: #111; 
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            overflow: hidden; /* Keeps the zoomed image inside the box */
+            overflow: hidden; 
         }
 
-        /* The YouTube Thumbnail Image */
         .video-placeholder img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Crops the horizontal thumb to fit the vertical box */
-            opacity: 0.7; /* Darkens the image slightly so the play button pops */
+            object-fit: cover; 
+            opacity: 0.7; 
             transition: opacity 0.3s ease, transform 0.8s ease;
             z-index: 1;
         }
 
         .video-placeholder:hover img {
             opacity: 0.9;
-            transform: scale(1.05); /* Slight zoom effect on hover */
+            transform: scale(1.05); 
         }
 
         .play-button {
+            position: relative;
+            z-index: 2; 
             width: 70px;
             height: 70px;
             background: rgba(26, 26, 26, 0.8);
@@ -99,7 +99,7 @@
             width: 24px;
             height: 24px;
             fill: #fff;
-            margin-left: 4px; /* visually center the play triangle */
+            margin-left: 4px; 
         }
 
         .video-placeholder:hover .play-button {
@@ -123,16 +123,35 @@
         }
         .close-yt-lightbox:hover { color: var(--accent-color); }
         
-        /* Container forcing vertical video aspect ratio in fullscreen */
         .yt-container {
             position: relative;
             width: 90%;
-            max-width: 500px; /* Limits width so vertical video doesn't stretch weirdly */
+            max-width: 500px; 
             aspect-ratio: 9 / 16;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
         .yt-container iframe {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* CUSTOM BUTTONS FOR BOOKING */
+        .btn-solid {
+            background-color: var(--text-color); 
+            color: var(--bg-color); 
+            border: 1px solid var(--text-color);
+        }
+        .btn-solid:hover {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
         }
     </style>
 </head>
@@ -171,7 +190,7 @@
                 <p class="meta-value">2026</p>
 
                 <span class="meta-label">Localização</span>
-                <p class="meta-value">Porto, Portugal</p>
+                <p class="meta-value">Portugal Continental</p>
 
                 <span class="meta-label">Contexto</span>
                 <div class="project-description">
@@ -196,9 +215,8 @@
                          alt="Álbum de Família 22688">
                 </a>
                 
-                <!-- Replace 'YOUR_YOUTUBE_ID' with the actual 11-character video ID -->
-                <div class="video-placeholder yt-trigger" data-youtube-id="U8QrDMkyVa8">
-                	<img src="https://img.youtube.com/vi/U8QrDMkyVa8/maxresdefault.jpg" alt="Video Thumbnail">
+                <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_1">
+                    <img src="https://img.youtube.com/vi/YOUR_YOUTUBE_ID_1/maxresdefault.jpg" alt="Video Thumbnail">
                     <div class="play-button">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
@@ -215,6 +233,7 @@
                 </a>
                 
                 <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_2">
+                    <img src="https://img.youtube.com/vi/YOUR_YOUTUBE_ID_2/maxresdefault.jpg" alt="Video Thumbnail">
                     <div class="play-button">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
@@ -231,6 +250,7 @@
                 </a>
                 
                 <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_3">
+                    <img src="https://img.youtube.com/vi/YOUR_YOUTUBE_ID_3/maxresdefault.jpg" alt="Video Thumbnail">
                     <div class="play-button">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
@@ -247,16 +267,43 @@
                 </a>
                 
                 <div class="video-placeholder yt-trigger" data-youtube-id="YOUR_YOUTUBE_ID_4">
+                    <img src="https://img.youtube.com/vi/YOUR_YOUTUBE_ID_4/maxresdefault.jpg" alt="Video Thumbnail">
                     <div class="play-button">
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                 </div>
             </div>
 
+            <!-- BOOKING SECTION -->
+            <div style="margin-top: 6rem; text-align: center; border-top: 1px solid #ddd; padding-top: 4rem;">
+                <h2 style="font-family: var(--font-heading); font-size: 2rem; margin-bottom: 1rem; text-transform: uppercase;">Agendar Sessão</h2>
+                <p style="color: #666; margin-bottom: 2rem; font-size: 1.1rem;">Selecione a cidade da sua preferência para verificar a disponibilidade.</p>
+                <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://calendar.app.google/5AFbTfgLmhrsr4yE8" target="_blank" class="cta-button btn-solid" style="min-width: 200px;">Porto</a>
+                    <a href="https://calendar.app.google/sGb1YnkPVabKyXDm8" target="_blank" class="cta-button btn-outline" style="min-width: 200px;">Lisboa</a>
+                </div>
+            </div>
+
+            <!-- PARTNERSHIPS SECTION -->
+            <div style="margin-top: 6rem; text-align: center;">
+                <h3 style="font-family: var(--font-heading); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-bottom: 2rem;">Projeto elaborado em parceria com:</h3>
+                
+                <div style="display: flex; gap: 2rem; justify-content: center; align-items: center; flex-wrap: wrap; opacity: 0.6;">
+                    <!-- Placeholder 1 -->
+                    <div style="width: 120px; height: 60px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #888; border-radius: 4px;">LOGO 1</div>
+                    
+                    <!-- Placeholder 2 -->
+                    <div style="width: 120px; height: 60px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #888; border-radius: 4px;">LOGO 2</div>
+                    
+                    <!-- Placeholder 3 -->
+                    <div style="width: 120px; height: 60px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #888; border-radius: 4px;">LOGO 3</div>
+                </div>
+            </div>
+
         </section>
     </main>
 
-    <!-- Standard Image Lightbox (handled by script.js) -->
+    <!-- Standard Image Lightbox -->
     <div id="lightbox">
         <span class="close-lightbox">&times;</span>
         <img id="lightbox-img" src="" alt="Modo Ecrã Inteiro">
@@ -279,7 +326,7 @@
         </p>
     </footer>
 
-    <!-- Master Script (for images, menu, age-gate) -->
+    <!-- Master Script -->
     <script src="script.js"></script>
 
     <!-- Page Specific Script for YouTube Lightbox -->
@@ -290,18 +337,15 @@
             const ytIframe = document.getElementById('yt-iframe');
             const closeYtBtn = document.querySelector('.close-yt-lightbox');
 
-            // Open Video Lightbox
             ytTriggers.forEach(trigger => {
                 trigger.addEventListener('click', () => {
                     const videoId = trigger.getAttribute('data-youtube-id');
-                    // Add ?autoplay=1 to force play when opened
                     ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
                     ytLightbox.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 });
             });
 
-            // Close Video Lightbox (Stop video playback by clearing src)
             const closeYtLightbox = () => {
                 ytLightbox.classList.remove('active');
                 document.body.style.overflow = 'auto';

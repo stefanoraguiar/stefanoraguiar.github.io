@@ -152,6 +152,20 @@
             background-color: var(--text-color);
             color: var(--bg-color);
         }
+
+        /* PARTNERSHIP IMAGES HOVER EFFECT */
+        .partner-logo {
+            max-width: 110px;
+            max-height: 55px;
+            object-fit: contain;
+            filter: grayscale(100%);
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -209,13 +223,11 @@
 
                 <div style="margin-top: 4rem; border-top: 1px solid #ddd; padding-top: 2rem;">
                     <span class="meta-label" style="margin-bottom: 1rem;">Parcerias</span>
-                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">Projeto elaborado com:</p>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-start; opacity: 0.6;">
-                        <div style="width: 110px; height: 55px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #888; border-radius: 4px;">LOGO 1</div>
-                        
-                        <div style="width: 110px; height: 55px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #888; border-radius: 4px;">LOGO 2</div>
-                        
-                        <div style="width: 110px; height: 55px; background-color: #e8e4db; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #888; border-radius: 4px;">LOGO 3</div>
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;">Projeto elaborado com:</p>
+                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: flex-start; align-items: center;">
+                        <img src="img/album-de-familia/logo-porto-nao-monogamico.jpg" alt="Porto Não Monogâmico" class="partner-logo">
+                        <img src="img/album-de-familia/logo-polyportugal.jpg" alt="PolyPortugal" class="partner-logo">
+                        <img src="img/album-de-familia/logo-ousare.jpg" alt="Ousare" class="partner-logo">
                     </div>
                 </div>
 

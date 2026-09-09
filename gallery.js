@@ -195,5 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function gallerySlug() {
     const parts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
     if (parts[0] === 'gallery' && parts[1]) return parts[1].toLowerCase();
+    if (parts.length === 1 && isGalleryHost()) return parts[0].toLowerCase();
     return new URLSearchParams(window.location.search).get('slug');
+}
+
+function isGalleryHost() {
+    const host = window.location.hostname;
+    return host === 'gallery.stefanoaguiar.com' || host === 'localhost';
 }

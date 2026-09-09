@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { put } from '@vercel/blob';
@@ -58,12 +58,23 @@ for (const name of names) {
   if (!info.isFile()) continue;
 
   const pathname = `client-galleries/${slug}/${name}`;
-  const blob = await put(pathname, createReadStream(filePath), {
-    access: 'private',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    multipart: info.size > 4 * 1024 * 1024,
-  });
+  const body = await readFile(filePath);
+  let blob;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      blob = await put(pathname, body, {
+        access: 'private',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        multipart: info.size > 4 * 1024 * 1024,
+      });
+      break;
+    } catch (error) {
+      console.error(`Retry ${attempt}/3 for ${name}: ${error.message}`);
+      if (attempt === 3) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+    }
+  }
 
   photos.push({
     name,
@@ -83,4 +94,4 @@ index[slug] = {
 await saveIndex(index);
 
 console.log(`Published ${slug} (${photos.length} photos) to ${INDEX_PATH}`);
-console.log(`Client link: /gallery/${slug}`);
+console.log(`Client link: https://gallery.stefanoaguiar.com/${slug}`);

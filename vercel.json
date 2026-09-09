@@ -1,6 +1,19 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "gallery.stefanoaguiar.com" }],
+      "destination": "https://stefanoaguiar.com",
+      "permanent": false
+    }
+  ],
   "rewrites": [
-    { "source": "/gallery/:slug", "destination": "/gallery.html" }
+    { "source": "/gallery/:slug", "destination": "/gallery.html" },
+    {
+      "source": "/:slug",
+      "has": [{ "type": "host", "value": "gallery.stefanoaguiar.com" }],
+      "destination": "/gallery.html"
+    }
   ],
   "headers": [
     {
@@ -9,6 +22,11 @@
     },
     {
       "source": "/gallery/:path*",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "gallery.stefanoaguiar.com" }],
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     },
     {

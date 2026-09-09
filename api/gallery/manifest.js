@@ -1,4 +1,4 @@
-import { json, loadIndex, readSession, requireSlug } from '../_lib/gallery.js';
+import { json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
 
 export async function GET(request) {
   try {
@@ -19,7 +19,7 @@ export async function GET(request) {
     return json({
       ok: true,
       title: gallery.title,
-      photos: (gallery.photos || []).map((photo) => ({
+      photos: sortPhotos(gallery.photos).map((photo) => ({
         name: photo.name,
         src: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}`,
         download: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}&download=1`,

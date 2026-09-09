@@ -8,6 +8,14 @@ export const COOKIE_NAME = 'gallery_session';
 export const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,62}$/;
 export const IMAGE_EXTENSIONS = new Set(['.webp', '.jpg', '.jpeg', '.png', '.gif']);
 
+export function byPhotoName(a, b) {
+  return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+}
+
+export function sortPhotos(photos) {
+  return [...(photos || [])].sort((a, b) => byPhotoName(a?.name, b?.name));
+}
+
 export function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
     status,

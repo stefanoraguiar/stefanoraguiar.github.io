@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { put } from '@vercel/blob';
-import { IMAGE_EXTENSIONS, INDEX_PATH, loadIndex, saveIndex } from '../api/_lib/gallery.js';
+import { IMAGE_EXTENSIONS, INDEX_PATH, byPhotoName, loadIndex, saveIndex } from '../api/_lib/gallery.js';
 
 function loadEnvFiles() {
   for (const file of ['.env.local', '.env']) {
@@ -44,7 +44,7 @@ if (!config.title || !Array.isArray(config.emails) || config.emails.length === 0
 
 const names = (await readdir(folder))
   .filter((name) => IMAGE_EXTENSIONS.has(path.extname(name).toLowerCase()))
-  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  .sort(byPhotoName);
 
 if (names.length === 0) {
   console.error(`No photos found in ${folder}`);

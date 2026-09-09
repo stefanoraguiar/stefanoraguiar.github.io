@@ -689,14 +689,17 @@ body.gallery-page .gallery-header nav {
     margin: 0 auto;
 }
 
-.gallery-grid {
-    column-count: 3;
-    column-gap: 2rem;
+.gallery-page .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    column-count: auto;
+    column-gap: unset;
+    align-items: start;
 }
 
 .gallery-card {
-    break-inside: avoid;
-    margin-bottom: 2rem;
+    margin-bottom: 0;
 }
 
 .gallery-card .gallery-trigger {
@@ -721,10 +724,16 @@ body.gallery-page .gallery-header nav {
 }
 
 @media (max-width: 1024px) {
-    .gallery-grid { column-count: 2; }
+    .gallery-page .gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-count: auto;
+    }
 }
 
 @media (max-width: 768px) {
-    .gallery-grid { column-count: 1; }
+    .gallery-page .gallery-grid {
+        grid-template-columns: 1fr;
+        column-count: auto;
+    }
     .gallery-header-title { display: none; }
 }

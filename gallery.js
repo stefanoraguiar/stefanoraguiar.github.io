@@ -98,7 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = `${data.title} | Stefano Aguiar`;
         grid.innerHTML = '';
 
-        data.photos.forEach((photo) => {
+        const photos = [...(data.photos || [])].sort((a, b) =>
+            String(a.name || '').localeCompare(String(b.name || ''), undefined, {
+                numeric: true,
+                sensitivity: 'base',
+            })
+        );
+
+        photos.forEach((photo) => {
             const figure = document.createElement('figure');
             figure.className = 'gallery-card';
 

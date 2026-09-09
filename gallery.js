@@ -13,10 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const codeInput = document.getElementById('gallery-code');
     const sendBtn = document.getElementById('btn-send-code');
     const verifyBtn = document.getElementById('btn-verify');
+    const downloadBar = document.getElementById('gallery-download-bar');
+    const downloadAllBtn = document.getElementById('btn-download-all');
+    const zipModal = document.getElementById('gallery-zip-modal');
+    const zipCopy = document.getElementById('zip-modal-copy');
+    const zipCancel = document.getElementById('btn-zip-cancel');
+    const zipConfirm = document.getElementById('btn-zip-confirm');
 
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const closeBtn = document.querySelector('.close-lightbox');
+
+    const canShare = typeof navigator.share === 'function';
+    let zipDownload = '';
+    let lightboxBound = false;
 
     if (!slug) {
         showError('This gallery link is not valid.');
@@ -89,6 +99,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    downloadAllBtn.addEventListener('click', () => {
+        if (!zipDownload) return;
+        zipModal.hidden = false;
+        document.body.style.overflow = 'hidden';
+    });
+
+    zipCancel.addEventListener('click', closeZipModal);
+    zipModal.addEventListener('click', (event) => {
+        if (event.target === zipModal) closeZipModal();
+    });
+    zipConfirm.addEventListener('click', () => {
+        if (!zipDownload) return;
+        window.location.href = zipDownload;
+        closeZipModal();
+    });
+
     function renderGallery(data) {
         document.body.style.overflow = 'auto';
         gate.hidden = true;
@@ -109,6 +135,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const figure = document.createElement('figure');
             figure.className = 'gallery-card';
 
+            const media = document.createElement('div');
+            media.className = 'gallery-media';
+
             const trigger = document.createElement('a');
             trigger.href = photo.src;
             trigger.className = 'gallery-trigger';
@@ -120,15 +149,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
             trigger.appendChild(img);
 
-            const download = document.createElement('a');
-            download.className = 'gallery-download';
-            download.href = photo.download;
-            download.textContent = 'Download';
+            const actions = document.createElement('div');
+            actions.className = 'gallery-card-actions';
+            actions.addEventListener('click', (event) => event.stopPropagation());
 
-            figure.appendChild(trigger);
-            figure.appendChild(download);
+            const download = document.createElement('a');
+            download.className = 'gallery-icon-btn';
+            download.href = photo.download;
+            download.download = photo.name;
+            download.setAttribute('aria-label', 'Download photo');
+            download.title = 'Download';
+            download.innerHTML = downloadIcon();
+            download.addEventListener('click', (event) => event.stopPropagation());
+
+            actions.appendChild(download);
+
+            if (canShare) {
+                const share = document.createElement('button');
+                share.type = 'button';
+                share.className = 'gallery-icon-btn';
+                share.setAttribute('aria-label', 'Share photo');
+                share.title = 'Share';
+                share.innerHTML = shareIcon();
+                share.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    sharePhoto(photo, data.title);
+                });
+                actions.appendChild(share);
+            }
+
+            media.appendChild(trigger);
+            media.appendChild(actions);
+            figure.appendChild(media);
             grid.appendChild(figure);
         });
+
+        if (data.zip?.download) {
+            zipDownload = data.zip.download;
+            const count = data.zip.count || photos.length;
+            downloadAllBtn.textContent = `Download all · ${data.zip.sizeLabel}`;
+            zipCopy.innerHTML = zipModalCopy(data.zip.sizeLabel, count);
+            downloadBar.hidden = false;
+            document.body.classList.add('gallery-has-download-bar');
+        } else {
+            zipDownload = '';
+            downloadBar.hidden = true;
+            document.body.classList.remove('gallery-has-download-bar');
+        }
 
         bindLightbox();
     }
@@ -144,9 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        if (lightboxBound) return;
+        lightboxBound = true;
+
         const closeLightbox = () => {
             lightbox.classList.remove('active');
-            document.body.style.overflow = 'auto';
+            if (zipModal.hidden) document.body.style.overflow = 'auto';
             setTimeout(() => { lightboxImg.src = ''; }, 300);
         };
 
@@ -155,10 +226,36 @@ document.addEventListener('DOMContentLoaded', () => {
             if (event.target === lightbox) closeLightbox();
         });
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && lightbox.classList.contains('active')) {
-                closeLightbox();
+            if (event.key !== 'Escape') return;
+            if (!zipModal.hidden) {
+                closeZipModal();
+                return;
             }
+            if (lightbox.classList.contains('active')) closeLightbox();
         });
+    }
+
+    function closeZipModal() {
+        zipModal.hidden = true;
+        if (!lightbox.classList.contains('active')) document.body.style.overflow = 'auto';
+    }
+
+    async function sharePhoto(photo, title) {
+        try {
+            const response = await fetch(photo.src, { credentials: 'include' });
+            if (!response.ok) throw new Error('Could not load photo');
+            const blob = await response.blob();
+            const file = new File([blob], photo.name, { type: blob.type || 'image/webp' });
+            const payload = { files: [file], title, text: title };
+            if (navigator.canShare && !navigator.canShare(payload)) {
+                await navigator.share({ title, text: title, url: window.location.href });
+                return;
+            }
+            await navigator.share(payload);
+        } catch (error) {
+            if (error?.name === 'AbortError') return;
+            console.error(error);
+        }
     }
 
     async function loadManifest() {
@@ -198,6 +295,21 @@ document.addEventListener('DOMContentLoaded', () => {
     sendBtn.dataset.label = 'Send confirmation';
     verifyBtn.dataset.label = 'Enter';
 });
+
+function zipModalCopy(sizeLabel, count) {
+    return `
+        <span>This is a zip file of about <strong>${sizeLabel}</strong> (${count} photos). On a phone it will save to Files or Downloads. You will need to unzip it yourself — the photos will not appear in your camera roll automatically.</span>
+        <span lang="pt">Este ficheiro zip tem cerca de <strong>${sizeLabel}</strong> (${count} fotos). No telemóvel fica em Ficheiros ou Transferências. Tens de o descompactar tu — as fotos não entram sozinhas na galeria do telemóvel.</span>
+    `;
+}
+
+function downloadIcon() {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>';
+}
+
+function shareIcon() {
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14V3"/><path d="m8 7 4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>';
+}
 
 function gallerySlug() {
     const parts = window.location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);

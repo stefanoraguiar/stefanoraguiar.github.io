@@ -1,4 +1,4 @@
-import { json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
+import { formatBytes, json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
 
 export async function GET(request) {
   try {
@@ -16,14 +16,26 @@ export async function GET(request) {
       return json({ ok: false, error: 'This gallery is no longer available.' }, 404);
     }
 
+    const photos = sortPhotos(gallery.photos).map((photo) => ({
+      name: photo.name,
+      src: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}`,
+      download: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}&download=1`,
+    }));
+
+    const zip = gallery.zip?.pathname || gallery.zip?.url
+      ? {
+          count: photos.length,
+          size: gallery.zip.size || 0,
+          sizeLabel: formatBytes(gallery.zip.size || 0),
+          download: `/api/gallery/zip?slug=${encodeURIComponent(slug)}`,
+        }
+      : null;
+
     return json({
       ok: true,
       title: gallery.title,
-      photos: sortPhotos(gallery.photos).map((photo) => ({
-        name: photo.name,
-        src: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}`,
-        download: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}&download=1`,
-      })),
+      photos,
+      zip,
     });
   } catch (error) {
     console.error('manifest', error);

@@ -702,25 +702,119 @@ body.gallery-page .gallery-header nav {
     margin-bottom: 0;
 }
 
+.gallery-media {
+    position: relative;
+}
+
 .gallery-card .gallery-trigger {
     display: block;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
-.gallery-download {
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #888;
+.gallery-card-actions {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: flex;
+    gap: 0.4rem;
+    z-index: 2;
+}
+
+.gallery-icon-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 2.35rem;
+    height: 2.35rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
     text-decoration: none;
-    border-bottom: 1px solid #333;
-    padding-bottom: 2px;
+    padding: 0;
 }
 
-.gallery-download:hover {
+.gallery-icon-btn svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.gallery-icon-btn:hover,
+.gallery-icon-btn:focus-visible {
+    background: rgba(0, 0, 0, 0.8);
     color: var(--accent-color);
-    border-color: var(--accent-color);
+    outline: none;
+}
+
+body.gallery-has-download-bar .gallery-main {
+    padding-bottom: 7.5rem;
+}
+
+.gallery-download-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 1.25rem 1.5rem calc(1.25rem + env(safe-area-inset-bottom));
+    background: linear-gradient(transparent, rgba(17, 17, 17, 0.96) 28%);
+    pointer-events: none;
+}
+
+.gallery-download-bar[hidden] {
+    display: none;
+}
+
+.gallery-download-all {
+    pointer-events: auto;
+    width: min(100%, 28rem);
+    margin: 0;
+}
+
+#gallery-zip-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.86);
+}
+
+#gallery-zip-modal[hidden] {
+    display: none;
+}
+
+.gallery-zip-dialog {
+    width: min(100%, 34rem);
+}
+
+.gallery-zip-dialog p,
+#zip-modal-copy {
+    text-align: left;
+    margin-bottom: 0;
+}
+
+#zip-modal-copy span {
+    display: block;
+    margin-bottom: 1rem;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.gallery-zip-actions {
+    margin-top: 1.75rem;
+    flex-wrap: wrap;
 }
 
 @media (max-width: 1024px) {

@@ -42,6 +42,24 @@
         <div class="gallery-grid" id="gallery-grid"></div>
     </main>
 
+    <div class="gallery-download-bar" id="gallery-download-bar" hidden>
+        <button type="button" class="btn-enter gallery-download-all" id="btn-download-all">
+            Download all
+        </button>
+    </div>
+
+    <div id="gallery-zip-modal" hidden>
+        <div class="age-gate-content gallery-zip-dialog" role="dialog" aria-modal="true" aria-labelledby="zip-modal-title">
+            <p class="meta-label">Download all</p>
+            <h2 id="zip-modal-title">Download zip</h2>
+            <p id="zip-modal-copy"></p>
+            <div class="age-gate-buttons gallery-zip-actions">
+                <button type="button" class="btn-exit" id="btn-zip-cancel">Cancel</button>
+                <button type="button" class="btn-enter" id="btn-zip-confirm">Download zip</button>
+            </div>
+        </div>
+    </div>
+
     <div id="lightbox">
         <span class="close-lightbox">&times;</span>
         <img id="lightbox-img" src="" alt="Full screen view">

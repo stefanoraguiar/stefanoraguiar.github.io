@@ -153,3 +153,15 @@ export function requireSlug(value) {
 export function findPhoto(gallery, filename) {
   return (gallery?.photos || []).find((photo) => photo.name === filename) || null;
 }
+
+export function formatBytes(bytes) {
+  const n = Number(bytes) || 0;
+  const mb = n / (1024 * 1024);
+  if (mb < 0.1) return `${Math.max(1, Math.round(n / 1024))} KB`;
+  if (mb < 10) return `${mb.toFixed(1).replace(/\.0$/, '')} MB`;
+  return `${Math.round(mb)} MB`;
+}
+
+export function zipFileName(slug) {
+  return `${slug}.zip`;
+}

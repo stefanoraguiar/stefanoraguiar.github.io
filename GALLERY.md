@@ -79,6 +79,12 @@ This folder is gitignored. Then:
 npm run publish-gallery -- fernanda-2026
 ```
 
+That uploads the photos and builds a zip for **Download all**. To rebuild only the zip:
+
+```bash
+npm run publish-gallery -- fernanda-2026 --zip-only
+```
+
 Send the client: `https://gallery.stefanoaguiar.com/fernanda-2026`
 
 Photos and emails live in private Blob storage, not in the public GitHub repo.

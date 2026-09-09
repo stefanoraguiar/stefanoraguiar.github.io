@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "api/gallery/zip.js": { "maxDuration": 60 }
+  },
   "redirects": [
     {
       "source": "/",

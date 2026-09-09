@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+.env
+.env.local
+.vercel
+client-galleries/*
+!client-galleries/_example/
+!client-galleries/_example/**
+_screens/

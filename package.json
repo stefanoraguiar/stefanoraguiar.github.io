@@ -1,0 +1,12 @@
+{
+  "name": "stefanoaguiar.com",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "publish-gallery": "node scripts/publish-gallery.mjs"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.0.0",
+    "resend": "^6.0.0"
+  }
+}

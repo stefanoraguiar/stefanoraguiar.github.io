@@ -591,3 +591,140 @@ html.needs-age-gate #age-gate {
     border-color: #666;
     color: #888;
 }
+
+/* --- CLIENT DELIVERY GALLERY --- */
+body.gallery-page {
+    min-height: 100vh;
+}
+
+body.gallery-page:has(#gallery-gate:not([hidden])) {
+    overflow: hidden;
+}
+
+body.gallery-page .gallery-header {
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-color);
+    border-bottom: 1px solid #222;
+    padding: 1.5rem 2rem;
+    z-index: 20;
+}
+
+body.gallery-page .gallery-header nav {
+    gap: 2rem;
+}
+
+.gallery-header-title {
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    text-align: right;
+}
+
+#gallery-gate {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+#gallery-gate[hidden] {
+    display: none;
+}
+
+.gallery-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
+.gallery-form label {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.gallery-form input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: #000;
+    border: 1px solid #333;
+    color: var(--text-color);
+    font-family: var(--font-body);
+    font-size: 1rem;
+}
+
+.gallery-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.gallery-form .btn-enter {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.gallery-error {
+    color: #c9a0a0;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.gallery-main {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery-grid {
+    column-count: 3;
+    column-gap: 2rem;
+}
+
+.gallery-card {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+}
+
+.gallery-card .gallery-trigger {
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.gallery-download {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888;
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+    padding-bottom: 2px;
+}
+
+.gallery-download:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+@media (max-width: 1024px) {
+    .gallery-grid { column-count: 2; }
+}
+
+@media (max-width: 768px) {
+    .gallery-grid { column-count: 1; }
+    .gallery-header-title { display: none; }
+}

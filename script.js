@@ -1,52 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // ==========================================
-    // 0. AGE GATE LOGIC (Injects HTML automatically)
+    // 0. AGE GATE LOGIC
     // ==========================================
     const checkAge = () => {
-        // If user has NOT verified yet
-        if (!localStorage.getItem('ageVerified')) {
-            
-            // 1. Create the HTML for the overlay
-            const ageGateHTML = `
+        const verified = (() => {
+            try {
+                return localStorage.getItem('ageVerified') === 'true';
+            } catch (e) {
+                return false;
+            }
+        })();
+
+        let ageGate = document.getElementById('age-gate');
+
+        if (verified) {
+            if (ageGate) ageGate.remove();
+            document.documentElement.classList.remove('needs-age-gate');
+            return;
+        }
+
+        document.documentElement.classList.add('needs-age-gate');
+
+        if (!ageGate) {
+            document.body.insertAdjacentHTML('afterbegin', `
                 <div id="age-gate">
                     <div class="age-gate-content">
                         <h2>Restricted Access</h2>
                         <p>This website contains artistic nude photography and adult themes.<br>
                         Please verify that you are 18 years of age or older to enter.</p>
-                        
                         <div class="age-gate-buttons">
-                            <button id="btn-enter" class="btn-enter">I am 18+</button>
-                            <button id="btn-exit" class="btn-exit">Exit</button>
+                            <button type="button" id="btn-enter" class="btn-enter">I am 18+</button>
+                            <button type="button" id="btn-exit" class="btn-exit">Exit</button>
                         </div>
                     </div>
                 </div>
-            `;
-
-            // 2. Inject it into the body
-            document.body.insertAdjacentHTML('beforeend', ageGateHTML);
-            document.body.style.overflow = 'hidden'; // Stop scrolling
-
-            // 3. Add Button Logic
-            const btnEnter = document.getElementById('btn-enter');
-            const btnExit = document.getElementById('btn-exit');
-            const ageGate = document.getElementById('age-gate');
-
-            // ENTER: Save cookie and remove overlay
-            btnEnter.addEventListener('click', () => {
-                localStorage.setItem('ageVerified', 'true');
-                ageGate.style.opacity = '0';
-                setTimeout(() => {
-                    ageGate.remove();
-                    document.body.style.overflow = 'auto'; // Re-enable scroll
-                }, 500);
-            });
-
-            // EXIT: Redirect to Google
-            btnExit.addEventListener('click', () => {
-                window.location.href = "https://www.google.com";
-            });
+            `);
+            ageGate = document.getElementById('age-gate');
         }
+
+        const btnEnter = document.getElementById('btn-enter');
+        const btnExit = document.getElementById('btn-exit');
+
+        btnEnter.addEventListener('click', () => {
+            try {
+                localStorage.setItem('ageVerified', 'true');
+            } catch (e) {}
+
+            ageGate.style.display = 'flex';
+            ageGate.style.visibility = 'visible';
+            document.documentElement.classList.remove('needs-age-gate');
+            document.body.style.overflow = 'hidden';
+
+            requestAnimationFrame(() => {
+                ageGate.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                ageGate.remove();
+                document.body.style.overflow = 'auto';
+            }, 500);
+        });
+
+        btnExit.addEventListener('click', () => {
+            window.location.href = "https://www.google.com";
+        });
     };
 
     // Run the check immediately

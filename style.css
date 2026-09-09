@@ -221,6 +221,49 @@ nav {
 }
 .project-title { text-transform: uppercase; letter-spacing: 1px; }
 
+.project-card.is-unavailable {
+    cursor: default;
+}
+
+.project-card.is-unavailable:hover img {
+    transform: none;
+}
+
+.project-card.is-unavailable:hover figcaption {
+    color: #888;
+    border-color: #333;
+}
+
+.project-card.is-unavailable figure::after {
+    content: "Not yet available";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.72);
+    color: var(--text-color);
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.project-card.is-unavailable:hover figure::after,
+.project-card.is-unavailable:focus-visible figure::after {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .project-card.is-unavailable figure::after {
+        opacity: 1;
+    }
+}
+
 /* --- 5. PHILOSOPHY & CONTACT --- */
 #philosophy { padding: 8rem 2rem; background-color: #161616; }
 .philosophy-container {
@@ -452,18 +495,36 @@ footer p {
 @keyframes navLinkFade { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
 
 /* --- AGE VERIFICATION OVERLAY --- */
+html.needs-age-gate {
+    background-color: #000;
+}
+
+html.needs-age-gate body {
+    visibility: hidden;
+    overflow: hidden;
+}
+
 #age-gate {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #000; /* Solid Black */
-    z-index: 9999; /* Sit on top of EVERYTHING */
-    display: flex;
+    background-color: #000;
+    z-index: 9999;
     justify-content: center;
     align-items: center;
     padding: 2rem;
+    transition: opacity 0.5s ease;
+    --bg-color: #111111;
+    --text-color: #f4f4f4;
+    --accent-color: #d4af37;
+}
+
+html.needs-age-gate #age-gate {
+    display: flex;
+    visibility: visible;
 }
 
 .age-gate-content {

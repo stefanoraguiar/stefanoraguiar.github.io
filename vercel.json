@@ -1,0 +1,22 @@
+{
+  "rewrites": [
+    { "source": "/gallery/:slug", "destination": "/gallery.html" }
+  ],
+  "headers": [
+    {
+      "source": "/gallery.html",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/gallery/:path*",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ]
+}

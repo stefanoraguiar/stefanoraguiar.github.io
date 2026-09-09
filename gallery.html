@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Client Gallery | Stefano Aguiar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+</head>
+<body class="gallery-page">
+    <div id="gallery-gate">
+        <div class="age-gate-content gallery-gate-content">
+            <p class="meta-label">Private gallery</p>
+            <h2 id="gate-heading">Client gallery</h2>
+            <p id="gate-copy">Enter the email address this gallery was shared with. You will receive a confirmation number.</p>
+            <form id="email-form" class="gallery-form">
+                <label for="gallery-email">Email</label>
+                <input id="gallery-email" name="email" type="email" autocomplete="email" required>
+                <button type="submit" class="btn-enter" id="btn-send-code">Send confirmation</button>
+            </form>
+            <form id="code-form" class="gallery-form" hidden>
+                <label for="gallery-code">Confirmation number</label>
+                <input id="gallery-code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" required>
+                <button type="submit" class="btn-enter" id="btn-verify">Enter</button>
+            </form>
+            <p id="gate-error" class="gallery-error" hidden></p>
+        </div>
+    </div>
+
+    <header class="gallery-header" id="gallery-header" hidden>
+        <nav>
+            <div class="logo"><a href="/index.html">STEFANO<span>AGUIAR</span></a></div>
+            <p class="gallery-header-title" id="gallery-title"></p>
+        </nav>
+    </header>
+
+    <main class="gallery-main" id="gallery-main" hidden>
+        <div class="gallery-grid" id="gallery-grid"></div>
+    </main>
+
+    <div id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img id="lightbox-img" src="" alt="Full screen view">
+    </div>
+
+    <script src="/gallery.js"></script>
+</body>
+</html>

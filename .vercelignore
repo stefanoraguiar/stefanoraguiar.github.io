@@ -1,0 +1,5 @@
+_screens
+.DS_Store
+client-galleries/*
+!client-galleries/_example
+!client-galleries/_example/**

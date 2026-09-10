@@ -23,10 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const closeBtn = document.querySelector('.close-lightbox');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
 
     const canShare = typeof navigator.share === 'function';
+    const tabKey = `gallery_open_${slug || ''}`;
     let zipDownload = '';
     let lightboxBound = false;
+    let galleryPhotos = [];
+    let lightboxIndex = 0;
 
     if (!slug) {
         showError('This gallery link is not valid.');
@@ -37,14 +42,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let pendingEmail = '';
 
-    loadManifest()
-        .then((data) => {
+    startSession();
+
+    async function startSession() {
+        if (!sessionStorage.getItem(tabKey)) {
+            await fetch('/api/gallery/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+            document.body.style.overflow = 'hidden';
+            return;
+        }
+        try {
+            const data = await loadManifest();
             if (data?.ok) renderGallery(data);
             else document.body.style.overflow = 'hidden';
-        })
-        .catch(() => {
+        } catch (error) {
             document.body.style.overflow = 'hidden';
-        });
+        }
+    }
 
     emailForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -90,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showError('Signed in, but the gallery could not be loaded.');
                 return;
             }
+            sessionStorage.setItem(tabKey, '1');
             renderGallery(manifest);
         } catch (error) {
             console.error(error);
@@ -131,7 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         );
 
-        photos.forEach((photo) => {
+        galleryPhotos = photos;
+
+        photos.forEach((photo, index) => {
             const figure = document.createElement('figure');
             figure.className = 'gallery-card';
 
@@ -141,6 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const trigger = document.createElement('a');
             trigger.href = photo.src;
             trigger.className = 'gallery-trigger';
+            trigger.dataset.index = String(index);
 
             const img = document.createElement('img');
             img.src = photo.src;
@@ -206,33 +223,62 @@ document.addEventListener('DOMContentLoaded', () => {
         triggers.forEach((trigger) => {
             trigger.addEventListener('click', (event) => {
                 event.preventDefault();
-                lightboxImg.src = trigger.getAttribute('href');
-                lightbox.classList.add('active');
-                document.body.style.overflow = 'hidden';
+                openLightbox(Number(trigger.dataset.index) || 0);
             });
         });
 
         if (lightboxBound) return;
         lightboxBound = true;
 
-        const closeLightbox = () => {
-            lightbox.classList.remove('active');
-            if (zipModal.hidden) document.body.style.overflow = 'auto';
-            setTimeout(() => { lightboxImg.src = ''; }, 300);
-        };
-
         if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+        if (lightboxPrev) lightboxPrev.addEventListener('click', (event) => {
+            event.stopPropagation();
+            stepLightbox(-1);
+        });
+        if (lightboxNext) lightboxNext.addEventListener('click', (event) => {
+            event.stopPropagation();
+            stepLightbox(1);
+        });
         lightbox.addEventListener('click', (event) => {
             if (event.target === lightbox) closeLightbox();
         });
+        lightboxImg.addEventListener('click', (event) => event.stopPropagation());
         document.addEventListener('keydown', (event) => {
-            if (event.key !== 'Escape') return;
             if (!zipModal.hidden) {
-                closeZipModal();
+                if (event.key === 'Escape') closeZipModal();
                 return;
             }
-            if (lightbox.classList.contains('active')) closeLightbox();
+            if (!lightbox.classList.contains('active')) return;
+            if (event.key === 'Escape') closeLightbox();
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                stepLightbox(-1);
+            }
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                stepLightbox(1);
+            }
         });
+    }
+
+    function openLightbox(index) {
+        if (!galleryPhotos.length) return;
+        lightboxIndex = (index + galleryPhotos.length) % galleryPhotos.length;
+        lightboxImg.src = galleryPhotos[lightboxIndex].src;
+        lightboxImg.alt = galleryPhotos[lightboxIndex].name || titleEl.textContent;
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function stepLightbox(delta) {
+        if (!lightbox.classList.contains('active') || !galleryPhotos.length) return;
+        openLightbox(lightboxIndex + delta);
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        if (zipModal.hidden) document.body.style.overflow = 'auto';
+        setTimeout(() => { lightboxImg.src = ''; }, 300);
     }
 
     function closeZipModal() {

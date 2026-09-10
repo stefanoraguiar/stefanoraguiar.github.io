@@ -102,7 +102,20 @@ export function sessionCookie(token) {
     'Path=/',
     'HttpOnly',
     'SameSite=Lax',
-    `Max-Age=${SESSION_MAX_AGE}`,
+  ];
+  if (isProd) parts.push('Secure');
+  return parts.join('; ');
+}
+
+export function expiredSessionCookie() {
+  const isProd = process.env.VERCEL_ENV === 'production';
+  const parts = [
+    `${COOKIE_NAME}=`,
+    'Path=/',
+    'HttpOnly',
+    'SameSite=Lax',
+    'Max-Age=0',
+    'Expires=Thu, 01 Jan 1970 00:00:00 GMT',
   ];
   if (isProd) parts.push('Secure');
   return parts.join('; ');

@@ -47,16 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
     async function startSession() {
         if (!sessionStorage.getItem(tabKey)) {
             await fetch('/api/gallery/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
-            document.body.style.overflow = 'hidden';
-            return;
         }
         try {
             const data = await loadManifest();
-            if (data?.ok) renderGallery(data);
-            else document.body.style.overflow = 'hidden';
+            if (data?.ok) {
+                renderGallery(data);
+                return;
+            }
         } catch (error) {
-            document.body.style.overflow = 'hidden';
+            console.error(error);
         }
+        document.body.style.overflow = 'hidden';
     }
 
     emailForm.addEventListener('submit', async (event) => {

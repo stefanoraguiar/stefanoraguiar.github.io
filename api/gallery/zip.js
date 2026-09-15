@@ -1,5 +1,5 @@
 import { get } from '@vercel/blob';
-import { loadIndex, readSession, requireSlug, zipFileName } from '../_lib/gallery.js';
+import { canViewGallery, loadIndex, readSession, requireSlug, zipFileName } from '../_lib/gallery.js';
 
 export const maxDuration = 60;
 
@@ -9,12 +9,15 @@ export async function GET(request) {
     const slug = requireSlug(url.searchParams.get('slug'));
     const session = readSession(request);
 
-    if (!slug || !session || session.slug !== slug) {
+    if (!slug) {
       return new Response('Unauthorized', { status: 401 });
     }
 
     const index = await loadIndex();
     const gallery = index[slug];
+    if (!canViewGallery(gallery, session, slug)) {
+      return new Response('Unauthorized', { status: 401 });
+    }
     const zip = gallery?.zip;
     if (!zip?.url && !zip?.pathname) {
       return new Response('Not found', { status: 404 });

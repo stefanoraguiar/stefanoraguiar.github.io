@@ -167,6 +167,16 @@ export function findPhoto(gallery, filename) {
   return (gallery?.photos || []).find((photo) => photo.name === filename) || null;
 }
 
+export function galleryAccess(gallery) {
+  return gallery?.access === 'open' ? 'open' : 'private';
+}
+
+export function canViewGallery(gallery, session, slug) {
+  if (!gallery) return false;
+  if (galleryAccess(gallery) === 'open') return true;
+  return Boolean(session && session.slug === slug);
+}
+
 export function formatBytes(bytes) {
   const n = Number(bytes) || 0;
   const mb = n / (1024 * 1024);

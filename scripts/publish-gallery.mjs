@@ -39,9 +39,10 @@ loadEnvFiles();
 const flags = new Set(process.argv.slice(2).filter((arg) => arg.startsWith('--')));
 const slug = process.argv.slice(2).find((arg) => !arg.startsWith('--'));
 const zipOnly = flags.has('--zip-only');
+const allowlistOnly = flags.has('--allowlist-only');
 
 if (!slug) {
-  console.error('Usage: npm run publish-gallery -- <slug> [--zip-only]');
+  console.error('Usage: npm run publish-gallery -- <slug> [--zip-only | --allowlist-only]');
   process.exit(1);
 }
 
@@ -49,8 +50,18 @@ const folder = path.resolve('client-galleries', slug);
 const configPath = path.join(folder, 'gallery.json');
 
 const config = JSON.parse(await readFile(configPath, 'utf8'));
-if (!config.title || !Array.isArray(config.emails) || config.emails.length === 0) {
-  console.error('gallery.json needs a title and at least one email.');
+const access = config.access === 'open' ? 'open' : 'private';
+const emails =
+  access === 'open'
+    ? []
+    : (config.emails || []).map((email) => String(email).trim().toLowerCase()).filter(Boolean);
+
+if (!config.title) {
+  console.error('gallery.json needs a title.');
+  process.exit(1);
+}
+if (access === 'private' && emails.length === 0) {
+  console.error('Private galleries need at least one email in gallery.json.');
   process.exit(1);
 }
 
@@ -101,6 +112,31 @@ async function zipPhotos(outPath) {
   });
 }
 
+if (allowlistOnly) {
+  const index = await loadIndex();
+  if (!index[slug]) {
+    console.error('No published gallery found for this slug. Run a full publish first.');
+    process.exit(1);
+  }
+  index[slug] = {
+    ...index[slug],
+    title: config.title,
+    access,
+    emails,
+    updatedAt: new Date().toISOString(),
+  };
+  await saveIndex(index);
+  console.log(`Updated ${slug} (${access})`);
+  if (access === 'open') {
+    console.log('  link-only public gallery — no email gate');
+  } else {
+    console.log('allowlist:');
+    for (const email of emails) console.log(`  ${email}`);
+  }
+  console.log(`Client link: https://gallery.stefanoaguiar.com/${slug}`);
+  process.exit(0);
+}
+
 let photos;
 if (zipOnly) {
   const index = await loadIndex();
@@ -141,7 +177,8 @@ try {
   const index = await loadIndex();
   index[slug] = {
     title: config.title,
-    emails: config.emails.map((email) => String(email).trim().toLowerCase()),
+    access,
+    emails,
     photos,
     zip: {
       name: zipName,

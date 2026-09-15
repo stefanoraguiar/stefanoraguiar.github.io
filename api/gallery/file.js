@@ -1,5 +1,6 @@
 import { get } from '@vercel/blob';
 import {
+  canViewGallery,
   findPhoto,
   loadIndex,
   mimeFor,
@@ -15,12 +16,15 @@ export async function GET(request) {
     const download = url.searchParams.get('download') === '1';
     const session = readSession(request);
 
-    if (!slug || !filename || !session || session.slug !== slug) {
+    if (!slug || !filename) {
       return new Response('Unauthorized', { status: 401 });
     }
 
     const index = await loadIndex();
     const gallery = index[slug];
+    if (!canViewGallery(gallery, session, slug)) {
+      return new Response('Unauthorized', { status: 401 });
+    }
     const photo = findPhoto(gallery, filename);
     if (!photo?.url && !photo?.pathname) {
       return new Response('Not found', { status: 404 });

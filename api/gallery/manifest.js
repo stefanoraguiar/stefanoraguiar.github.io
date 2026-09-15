@@ -1,4 +1,4 @@
-import { formatBytes, json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
+import { canViewGallery, formatBytes, json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
 
 export async function GET(request) {
   try {
@@ -6,12 +6,16 @@ export async function GET(request) {
     const slug = requireSlug(url.searchParams.get('slug'));
     const session = readSession(request);
 
-    if (!slug || !session || session.slug !== slug) {
+    if (!slug) {
       return json({ ok: false, error: 'Sign in to view this gallery.' }, 401);
     }
 
     const index = await loadIndex();
     const gallery = index[slug];
+    if (!canViewGallery(gallery, session, slug)) {
+      return json({ ok: false, error: 'Sign in to view this gallery.' }, 401);
+    }
+
     if (!gallery) {
       return json({ ok: false, error: 'This gallery is no longer available.' }, 404);
     }
@@ -34,6 +38,7 @@ export async function GET(request) {
     return json({
       ok: true,
       title: gallery.title,
+      access: gallery.access === 'open' ? 'open' : 'private',
       photos,
       zip,
     });

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "publish-gallery": "node scripts/publish-gallery.mjs"
+    "publish-gallery": "node scripts/publish-gallery.mjs",
+    "gallery-info": "node scripts/gallery-info.mjs"
   },
   "dependencies": {
     "@vercel/blob": "^2.0.0",

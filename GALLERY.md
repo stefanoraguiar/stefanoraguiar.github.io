@@ -73,6 +73,15 @@ client-galleries/fernanda-2026/002.webp
 }
 ```
 
+Link-only public gallery (no email gate; anyone with the URL can view and download). Do not use this for private client delivery:
+
+```json
+{
+  "title": "Open set — September 2026",
+  "access": "open"
+}
+```
+
 This folder is gitignored. Then:
 
 ```bash
@@ -83,6 +92,19 @@ That uploads the photos and builds a zip for **Download all**. To rebuild only t
 
 ```bash
 npm run publish-gallery -- fernanda-2026 --zip-only
+```
+
+To update title/emails without re-uploading:
+
+```bash
+npm run publish-gallery -- fernanda-2026 --allowlist-only
+```
+
+To inspect what Vercel Blob actually has (this is the live allowlist):
+
+```bash
+npm run gallery-info
+npm run gallery-info -- fernanda-2026
 ```
 
 Send the client: `https://gallery.stefanoaguiar.com/fernanda-2026`

@@ -1,4 +1,4 @@
-import { canViewGallery, formatBytes, json, loadIndex, readSession, requireSlug, sortPhotos } from '../_lib/gallery.js';
+import { canViewGallery, formatBytes, json, loadIndex, readSession, requireSlug, sortPhotos, takenOnFromName } from '../_lib/gallery.js';
 
 export async function GET(request) {
   try {
@@ -20,11 +20,16 @@ export async function GET(request) {
       return json({ ok: false, error: 'This gallery is no longer available.' }, 404);
     }
 
-    const photos = sortPhotos(gallery.photos).map((photo) => ({
-      name: photo.name,
-      src: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}`,
-      download: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(photo.name)}&download=1`,
-    }));
+    const photos = sortPhotos(gallery.photos).map((photo) => {
+      const file = photo.file || photo.name;
+      return {
+        name: photo.name,
+        file,
+        takenOn: photo.takenOn || takenOnFromName(photo.name) || '',
+        src: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(file)}`,
+        download: `/api/gallery/file?slug=${encodeURIComponent(slug)}&file=${encodeURIComponent(file)}&download=1`,
+      };
+    });
 
     const zip = gallery.zip?.pathname || gallery.zip?.url
       ? {
@@ -39,6 +44,7 @@ export async function GET(request) {
       ok: true,
       title: gallery.title,
       access: gallery.access === 'open' ? 'open' : 'private',
+      dateLabels: gallery.dateLabels || {},
       photos,
       zip,
     });

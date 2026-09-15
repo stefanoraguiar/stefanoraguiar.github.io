@@ -82,6 +82,30 @@ Link-only public gallery (no email gate; anyone with the URL can view and downlo
 }
 ```
 
+To split several shoots in one gallery (Google Photos-style dates), use folders named `YYYY-MM-DD`:
+
+```
+client-galleries/sara-silva/
+  gallery.json
+  2026-09-03/001.webp
+  2026-09-14/001.webp
+```
+
+Optional custom headings:
+
+```json
+{
+  "title": "Sara Silva",
+  "access": "open",
+  "dateLabels": {
+    "2026-09-03": "Studio",
+    "2026-09-14": "Outdoor"
+  }
+}
+```
+
+Dates in filenames (`2026-09-03-Sara_001.webp`) also group that way if the photos sit in the gallery root. A single shoot still looks like a normal grid, with no extra date heading.
+
 This folder is gitignored. Then:
 
 ```bash

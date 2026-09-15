@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gate = document.getElementById('gallery-gate');
     const header = document.getElementById('gallery-header');
     const main = document.getElementById('gallery-main');
-    const grid = document.getElementById('gallery-grid');
+    const sections = document.getElementById('gallery-sections');
     const titleEl = document.getElementById('gallery-title');
     const emailForm = document.getElementById('email-form');
     const codeForm = document.getElementById('code-form');
@@ -137,70 +137,50 @@ document.addEventListener('DOMContentLoaded', () => {
         main.hidden = false;
         titleEl.textContent = data.title;
         document.title = `${data.title} | Stefano Aguiar`;
-        grid.innerHTML = '';
+        sections.innerHTML = '';
 
-        const photos = [...(data.photos || [])].sort((a, b) =>
-            String(a.name || '').localeCompare(String(b.name || ''), undefined, {
+        const photos = [...(data.photos || [])].sort((a, b) => {
+            const da = String(a.takenOn || '');
+            const db = String(b.takenOn || '');
+            if (da !== db) {
+                if (!da) return 1;
+                if (!db) return -1;
+                return da.localeCompare(db);
+            }
+            return String(a.file || a.name || '').localeCompare(String(b.file || b.name || ''), undefined, {
                 numeric: true,
                 sensitivity: 'base',
-            })
-        );
+            });
+        });
 
         galleryPhotos = photos;
+        const groups = groupPhotosByDate(photos);
+        const showDates = groups.length > 1;
+        const dateLabels = data.dateLabels || {};
+        let photoIndex = 0;
 
-        photos.forEach((photo, index) => {
-            const figure = document.createElement('figure');
-            figure.className = 'gallery-card';
+        groups.forEach((group) => {
+            const section = document.createElement('section');
+            section.className = 'gallery-day';
 
-            const media = document.createElement('div');
-            media.className = 'gallery-media';
-
-            const trigger = document.createElement('a');
-            trigger.href = photo.src;
-            trigger.className = 'gallery-trigger';
-            trigger.dataset.index = String(index);
-
-            const img = document.createElement('img');
-            img.src = photo.src;
-            img.alt = data.title;
-            img.loading = 'lazy';
-
-            trigger.appendChild(img);
-
-            const actions = document.createElement('div');
-            actions.className = 'gallery-card-actions';
-            actions.addEventListener('click', (event) => event.stopPropagation());
-
-            const download = document.createElement('a');
-            download.className = 'gallery-icon-btn';
-            download.href = photo.download;
-            download.download = photo.name;
-            download.setAttribute('aria-label', 'Download photo');
-            download.title = 'Download';
-            download.innerHTML = downloadIcon();
-            download.addEventListener('click', (event) => event.stopPropagation());
-
-            actions.appendChild(download);
-
-            if (canShare) {
-                const share = document.createElement('button');
-                share.type = 'button';
-                share.className = 'gallery-icon-btn';
-                share.setAttribute('aria-label', 'Share photo');
-                share.title = 'Share';
-                share.innerHTML = shareIcon();
-                share.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    sharePhoto(photo, data.title);
-                });
-                actions.appendChild(share);
+            if (showDates) {
+                const heading = document.createElement('h2');
+                heading.className = 'gallery-day-title';
+                heading.textContent = shootHeading(group.key, dateLabels);
+                section.appendChild(heading);
             }
 
-            media.appendChild(trigger);
-            media.appendChild(actions);
-            figure.appendChild(media);
-            grid.appendChild(figure);
+            const grid = document.createElement('div');
+            grid.className = 'gallery-grid';
+
+            group.photos.forEach((photo) => {
+                const index = photoIndex;
+                photoIndex += 1;
+                grid.appendChild(photoCard(photo, index, data.title));
+            });
+
+            section.appendChild(grid);
+            sections.appendChild(section);
         });
 
         if (data.zip?.download) {
@@ -217,6 +197,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         bindLightbox();
+    }
+
+    function photoCard(photo, index, title) {
+        const figure = document.createElement('figure');
+        figure.className = 'gallery-card';
+
+        const media = document.createElement('div');
+        media.className = 'gallery-media';
+
+        const trigger = document.createElement('a');
+        trigger.href = photo.src;
+        trigger.className = 'gallery-trigger';
+        trigger.dataset.index = String(index);
+
+        const img = document.createElement('img');
+        img.src = photo.src;
+        img.alt = title;
+        img.loading = 'lazy';
+
+        trigger.appendChild(img);
+
+        const actions = document.createElement('div');
+        actions.className = 'gallery-card-actions';
+        actions.addEventListener('click', (event) => event.stopPropagation());
+
+        const download = document.createElement('a');
+        download.className = 'gallery-icon-btn';
+        download.href = photo.download;
+        download.download = photo.name;
+        download.setAttribute('aria-label', 'Download photo');
+        download.title = 'Download';
+        download.innerHTML = downloadIcon();
+        download.addEventListener('click', (event) => event.stopPropagation());
+
+        actions.appendChild(download);
+
+        if (canShare) {
+            const share = document.createElement('button');
+            share.type = 'button';
+            share.className = 'gallery-icon-btn';
+            share.setAttribute('aria-label', 'Share photo');
+            share.title = 'Share';
+            share.innerHTML = shareIcon();
+            share.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                sharePhoto(photo, title);
+            });
+            actions.appendChild(share);
+        }
+
+        media.appendChild(trigger);
+        media.appendChild(actions);
+        figure.appendChild(media);
+        return figure;
     }
 
     function bindLightbox() {
@@ -342,6 +377,33 @@ document.addEventListener('DOMContentLoaded', () => {
     sendBtn.dataset.label = 'Send confirmation';
     verifyBtn.dataset.label = 'Enter';
 });
+
+function groupPhotosByDate(photos) {
+    const groups = [];
+    const byKey = new Map();
+    photos.forEach((photo) => {
+        const key = photo.takenOn || '';
+        if (!byKey.has(key)) {
+            const group = { key, photos: [] };
+            byKey.set(key, group);
+            groups.push(group);
+        }
+        byKey.get(key).photos.push(photo);
+    });
+    return groups;
+}
+
+function shootHeading(iso, labels) {
+    if (iso && labels[iso]) return labels[iso];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return 'Other photos';
+    const [year, month, day] = iso.split('-').map(Number);
+    return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+    });
+}
 
 function zipModalCopy(sizeLabel, count) {
     return `

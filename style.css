@@ -716,6 +716,28 @@ body.gallery-page .gallery-header nav {
     margin: 0 auto;
 }
 
+.gallery-day {
+    margin-bottom: 2.5rem;
+}
+
+.gallery-day:last-child {
+    margin-bottom: 0;
+}
+
+.gallery-day-title {
+    position: sticky;
+    top: 4.35rem;
+    z-index: 15;
+    margin: 0 0 0.85rem;
+    padding: 0.55rem 0;
+    background-color: var(--bg-color);
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #cfcfcf;
+}
+
 .gallery-page .gallery-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -859,4 +881,5 @@ body.gallery-has-download-bar .gallery-main {
         column-count: auto;
     }
     .gallery-header-title { display: none; }
+    .gallery-day-title { top: 3.6rem; }
 }

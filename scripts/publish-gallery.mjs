@@ -5,11 +5,13 @@ import path from 'node:path';
 import { ZipArchive } from 'archiver';
 import { put } from '@vercel/blob';
 import {
+  DATE_KEY,
   IMAGE_EXTENSIONS,
   INDEX_PATH,
   byPhotoName,
   loadIndex,
   saveIndex,
+  takenOnFromName,
   zipFileName,
 } from '../api/_lib/gallery.js';
 
@@ -64,12 +66,60 @@ if (access === 'private' && emails.length === 0) {
   console.error('Private galleries need at least one email in gallery.json.');
   process.exit(1);
 }
+const dateLabels = {};
+if (config.dateLabels && typeof config.dateLabels === 'object') {
+  for (const [key, value] of Object.entries(config.dateLabels)) {
+    if (!DATE_KEY.test(key)) continue;
+    const label = String(value || '').trim();
+    if (label) dateLabels[key] = label;
+  }
+}
 
-const names = (await readdir(folder))
-  .filter((name) => IMAGE_EXTENSIONS.has(path.extname(name).toLowerCase()))
-  .sort(byPhotoName);
+async function collectPhotoFiles(root) {
+  const entries = await readdir(root, { withFileTypes: true });
+  const files = [];
 
-if (names.length === 0) {
+  for (const entry of entries) {
+    if (entry.name.startsWith('.')) continue;
+
+    if (entry.isDirectory() && DATE_KEY.test(entry.name)) {
+      const nested = await readdir(path.join(root, entry.name), { withFileTypes: true });
+      for (const child of nested) {
+        if (!child.isFile()) continue;
+        if (!IMAGE_EXTENSIONS.has(path.extname(child.name).toLowerCase())) continue;
+        files.push({
+          name: child.name,
+          relative: `${entry.name}/${child.name}`,
+          filePath: path.join(root, entry.name, child.name),
+          takenOn: entry.name,
+        });
+      }
+      continue;
+    }
+
+    if (entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())) {
+      files.push({
+        name: entry.name,
+        relative: entry.name,
+        filePath: path.join(root, entry.name),
+        takenOn: takenOnFromName(entry.name),
+      });
+    }
+  }
+
+  return files.sort((a, b) => {
+    if (a.takenOn !== b.takenOn) {
+      if (!a.takenOn) return 1;
+      if (!b.takenOn) return -1;
+      return a.takenOn.localeCompare(b.takenOn);
+    }
+    return byPhotoName(a.relative, b.relative);
+  });
+}
+
+const photoFiles = await collectPhotoFiles(folder);
+
+if (photoFiles.length === 0) {
   console.error(`No photos found in ${folder}`);
   process.exit(1);
 }
@@ -105,8 +155,8 @@ async function zipPhotos(outPath) {
       if (error.code !== 'ENOENT') reject(error);
     });
     archive.pipe(output);
-    for (const name of names) {
-      archive.file(path.join(folder, name), { name, store: true });
+    for (const photo of photoFiles) {
+      archive.file(photo.filePath, { name: photo.relative, store: true });
     }
     archive.finalize();
   });
@@ -123,6 +173,7 @@ if (allowlistOnly) {
     title: config.title,
     access,
     emails,
+    dateLabels,
     updatedAt: new Date().toISOString(),
   };
   await saveIndex(index);
@@ -147,20 +198,21 @@ if (zipOnly) {
   }
 } else {
   photos = [];
-  for (const name of names) {
-    const filePath = path.join(folder, name);
-    const info = await stat(filePath);
+  for (const item of photoFiles) {
+    const info = await stat(item.filePath);
     if (!info.isFile()) continue;
 
-    const pathname = `client-galleries/${slug}/${name}`;
-    const body = await readFile(filePath);
+    const pathname = `client-galleries/${slug}/${item.relative}`;
+    const body = await readFile(item.filePath);
     const blob = await putBlob(pathname, body, info.size);
     photos.push({
-      name,
+      name: item.name,
+      file: item.relative,
+      takenOn: item.takenOn,
       pathname,
       url: blob.url,
     });
-    console.log(`Uploaded ${name}`);
+    console.log(`Uploaded ${item.relative}`);
   }
 }
 
@@ -179,6 +231,7 @@ try {
     title: config.title,
     access,
     emails,
+    dateLabels,
     photos,
     zip: {
       name: zipName,
@@ -190,7 +243,7 @@ try {
   };
   await saveIndex(index);
 
-  console.log(`Zipped ${names.length} photos (${(zipInfo.size / (1024 * 1024)).toFixed(1)} MB)`);
+  console.log(`Zipped ${photoFiles.length} photos (${(zipInfo.size / (1024 * 1024)).toFixed(1)} MB)`);
   console.log(`Published ${slug} (${photos.length} photos) to ${INDEX_PATH}`);
   console.log(`Client link: https://gallery.stefanoaguiar.com/${slug}`);
 } finally {

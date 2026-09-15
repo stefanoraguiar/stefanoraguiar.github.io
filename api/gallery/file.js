@@ -36,11 +36,12 @@ export async function GET(request) {
     }
 
     const headers = {
-      'content-type': result.blob.contentType || mimeFor(filename),
+      'content-type': result.blob.contentType || mimeFor(photo.name || filename),
       'cache-control': 'private, max-age=300',
     };
     if (download) {
-      headers['content-disposition'] = `attachment; filename="${filename.replace(/"/g, '')}"`;
+      const downloadName = String(photo.name || filename).replace(/"/g, '').split('/').pop();
+      headers['content-disposition'] = `attachment; filename="${downloadName}"`;
     }
 
     return new Response(result.stream, { headers });

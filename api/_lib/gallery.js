@@ -7,13 +7,39 @@ export const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 export const COOKIE_NAME = 'gallery_session';
 export const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]{0,62}$/;
 export const IMAGE_EXTENSIONS = new Set(['.webp', '.jpg', '.jpeg', '.png', '.gif']);
+export const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
+
+export function takenOnFromName(name) {
+  const match = String(name).match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : '';
+}
+
+export function formatShootDate(iso) {
+  if (!DATE_KEY.test(iso)) return iso;
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
 
 export function byPhotoName(a, b) {
   return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
 }
 
 export function sortPhotos(photos) {
-  return [...(photos || [])].sort((a, b) => byPhotoName(a?.name, b?.name));
+  return [...(photos || [])].sort((a, b) => {
+    const da = String(a.takenOn || '');
+    const db = String(b.takenOn || '');
+    if (da !== db) {
+      if (!da) return 1;
+      if (!db) return -1;
+      return da.localeCompare(db);
+    }
+    return byPhotoName(a.file || a.name, b.file || b.name);
+  });
 }
 
 export function json(data, status = 200, headers = {}) {
@@ -164,7 +190,13 @@ export function requireSlug(value) {
 }
 
 export function findPhoto(gallery, filename) {
-  return (gallery?.photos || []).find((photo) => photo.name === filename) || null;
+  const wanted = decodeURIComponent(String(filename || ''));
+  const photos = gallery?.photos || [];
+  return (
+    photos.find((photo) => photo.file === wanted) ||
+    photos.find((photo) => photo.name === wanted) ||
+    null
+  );
 }
 
 export function galleryAccess(gallery) {

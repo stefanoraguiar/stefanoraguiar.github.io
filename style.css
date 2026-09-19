@@ -887,3 +887,132 @@ body.gallery-has-download-bar .gallery-main {
     .gallery-header-title { display: none; }
     .gallery-day-title { top: 3.6rem; }
 }
+
+/* --- PAYMENTS / PAGAMENTOS --- */
+body.pay-page header {
+    position: relative;
+    padding: 2rem;
+}
+
+.pay-main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1rem 2rem 4rem;
+}
+
+.pay-intro,
+.pay-close {
+    margin-bottom: 3.5rem;
+}
+
+.pay-bilingual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+.pay-col h1,
+.pay-col h2 {
+    font-family: var(--font-heading);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.pay-col h1 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.pay-col h2 {
+    font-size: 1.35rem;
+    letter-spacing: 2px;
+}
+
+.pay-col p {
+    color: #ccc;
+    line-height: 1.75;
+    margin-bottom: 1.1rem;
+    font-size: 0.98rem;
+}
+
+.pay-tier {
+    border: 1px solid #2a2a2a;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.pay-tier-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #222;
+    flex-wrap: wrap;
+}
+
+.pay-tier-head h3 {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.pay-tier-range {
+    color: var(--accent-color);
+    font-family: var(--font-heading);
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+}
+
+.pay-label {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    margin-bottom: 0.4rem;
+}
+
+.pay-stripe {
+    margin-top: 3rem;
+    border: 1px solid #333;
+    padding: 2rem;
+    background: #0d0d0d;
+}
+
+.pay-stripe-frame {
+    width: 100%;
+    min-height: 720px;
+    border: 0;
+    background: #111;
+}
+
+.pay-stripe-button {
+    display: block;
+    width: min(100%, 28rem);
+    margin: 1.5rem auto 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+.pay-stripe-fallback {
+    color: #888;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.pay-stripe-fallback a {
+    color: var(--accent-color);
+}
+
+@media (max-width: 860px) {
+    .pay-bilingual {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+}
